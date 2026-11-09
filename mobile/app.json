@@ -1,0 +1,46 @@
+{
+  "expo": {
+    "name": "MOODI",
+    "slug": "moodi",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.moodi.diary"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#faf7ff",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "package": "com.moodi.diary"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro",
+      "output": "single"
+    },
+    "scheme": "moodi",
+    "plugins": [
+      "expo-router",
+      [
+        "expo-notifications",
+        {
+          "color": "#7c61ce"
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "일기에 첨부할 사진을 고르기 위해 앨범에 접근해요.",
+          "cameraPermission": "일기에 첨부할 사진을 찍기 위해 카메라를 사용해요."
+        }
+      ]
+    ]
+  }
+}
