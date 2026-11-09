@@ -3,7 +3,7 @@ import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Icon, IconName } from './Icon';
 import { colors } from '../constants/theme';
 
-function Backdrop({ visible, onClose, children, center }: { visible: boolean; onClose: () => void; children: React.ReactNode; center?: boolean }) {
+export function Backdrop({ visible, onClose, children, center }: { visible: boolean; onClose: () => void; children: React.ReactNode; center?: boolean }) {
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose} statusBarTranslucent>
       <Pressable style={[styles.backdrop, center ? styles.center : styles.bottom]} onPress={onClose} accessibilityLabel="닫기">
