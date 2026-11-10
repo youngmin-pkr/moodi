@@ -3,7 +3,7 @@ import { Text } from '../components/Text';
 import { router, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ComfortCard } from '../components/ComfortCard';
-import { Mascot } from '../components/Mascot';
+import { AnimatedMascot } from '../components/AnimatedMascot';
 import { PrimaryButton } from '../components/PrimaryButton';
 import { colors, titleFont } from '../constants/theme';
 import { useRecords } from '../state/RecordsContext';
@@ -15,7 +15,7 @@ export default function SavedScreen() {
   return (
     <SafeAreaView style={styles.safe}>
       <View style={styles.center}>
-        <Mascot emotion={rec?.emotion} size={150} />
+        <AnimatedMascot emotion={rec?.emotion} size={150} reactKey={1} />
         <Text style={styles.title}>기록이 저장되었어요!</Text>
         <Text style={styles.msg}>오늘의 감정이{'\n'}소중히 기록 되었어요!</Text>
         <Text style={styles.thanks}>좋은 하루를 만들어주셔서 감사해요!</Text>

@@ -4,6 +4,7 @@ import { Text } from '../../components/Text';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTabBarPadding } from '../../components/FloatingTabBar';
+import { AnimatedMascot } from '../../components/AnimatedMascot';
 import { ComfortCard } from '../../components/ComfortCard';
 import { HeroArt } from '../../components/HeroArt';
 import { EmptyState } from '../../components/EmptyState';
@@ -52,7 +53,7 @@ export default function Home() {
           <Text style={styles.heroSmall}>마음이 머무는 곳</Text>
           <Text style={styles.heroTitle}>어떤 마음이든{'\n'}여기서는 괜찮아요.</Text>
           <View style={styles.heroMascot}>
-            <Mascot size={112} />
+            <AnimatedMascot size={112} sparkleColor="#ffffff" />
           </View>
           <View style={styles.heroCta}>
             <Icon name="edit" size={18} color="#fff" />

@@ -3,6 +3,7 @@ import { sortRecords, queryRecords, validateDraft, createSampleRecords, emotionL
 import { recordsInPeriod, countByEmotion, topEmotion, ratios, countByMonth, monthForEmotion, withJosa, distinctDays, weekDays } from '../stats';
 import { createBackup, parseBackup, mergeRecords, BackupError } from '../backup';
 import { parseTime, formatTime, koreanTime, stepTime } from '../time';
+import { mix, lighten, darken } from '../color';
 import { detectCrisis, comfortFor, replyFor, CRISIS_NUMBERS } from '../companion';
 import { emailError, passwordError, nicknameError } from '../validation';
 import { DiaryRecord } from '../../types';
@@ -263,3 +264,19 @@ describe('companion (체험용 답변 엔진)', () => {
 function rec0(): DiaryRecord {
   return { id: 'c1', date: '2026-10-01', emotion: 0, title: 't', body: 'b', photos: [] };
 }
+
+describe('color', () => {
+  it('mixes toward another color', () => {
+    expect(mix('#000000', '#ffffff', 0.5)).toBe('#808080');
+    expect(mix('#ff0000', '#ffffff', 0)).toBe('#ff0000');
+    expect(mix('#ff0000', '#ffffff', 1)).toBe('#ffffff');
+    expect(mix('#abc', '#abc', 0.5)).toBe('#aabbcc');
+  });
+  it('lightens and darkens', () => {
+    expect(lighten('#7c61ce', 0.5)).not.toBe('#7c61ce');
+    const l = parseInt(lighten('#7c61ce', 0.4).slice(1, 3), 16);
+    expect(l).toBeGreaterThan(0x7c);
+    const d = parseInt(darken('#d7bde9', 0.3).slice(1, 3), 16);
+    expect(d).toBeLessThan(0xd7);
+  });
+});

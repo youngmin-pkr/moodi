@@ -43,6 +43,8 @@ npx expo start
 - 글꼴: 앱 전체가 **Pretendard**(Regular·Medium·Bold, `assets/fonts/`)이고, 로고(MOODI)만 **Syncopate Bold**(`@expo-google-fonts/syncopate`)입니다. Pretendard는 SIL Open Font License로 알려져 있으니, 앱을 배포할 때는 글꼴 배포처의 라이선스 문구를 함께 확인하세요. ExtraLight·Light는 쓰는 곳이 없어 넣지 않았습니다. 글꼴이 늦게 불러와져 화면이 깜빡이지 않도록 시작 화면을 유지합니다.
 - **글꼴 바꾸기**: 파일(.ttf/.otf)을 `assets/fonts/`에 넣고, `src/app/_layout.tsx`의 `useFonts`에 등록한 뒤, `src/constants/theme.ts`의 `fonts`와 `fontFamilyForWeight`를 바꾸면 전체에 적용됩니다. 글자는 `src/components/Text.tsx`의 `Text`·`TextInput`을 쓰며, `fontWeight`를 글꼴 파일(Regular/Medium/Bold)로 바꿔 줍니다. 한글이 들어 있는 글꼴인지, 앱에 넣어 배포해도 되는 라이선스인지 먼저 확인하세요.
 - **탭 바**: 화면 위에 떠 있는 반투명(흐림 효과) 알약 모양이고, 선택 표시가 탭 사이를 미끄러져 움직입니다(`src/components/FloatingTabBar.tsx`). 탭 화면의 아래 여백은 `useTabBarPadding()`으로 맞춥니다.
+- **구름 애니메이션** (`src/components/AnimatedMascot.tsx`): 홈 소개 카드·환영 화면의 구름은 둥실 떠 있고, 숨 쉬고, 가끔 눈을 깜빡이고, 뒤에서 빛이 번지고 별이 반짝입니다. 감정 선택에서는 **선택한 구름만** 깨어나 감정마다 다르게 반응합니다(행복 폴짝, 설렘 살랑, 평온 흔들, 슬픔·피곤·우울 축 처짐, 화남 부르르, 불안 떨림, 기타 빙글). 환영 화면의 구름은 누르면 폴짝 뜁니다. 목록 속 작은 구름은 배터리를 위해 정지해 있고, 휴대폰의 **"동작 줄이기"** 가 켜져 있으면 모든 움직임을 끕니다.
+- 구름 캐릭터는 입체적으로 그려져 있습니다(위는 밝고 아래는 보라빛 음영, 하이라이트, 눈의 빛 점, 번지는 볼터치: `src/components/Mascot.tsx`). 그림자 색은 `src/lib/color.ts`의 `darken`(보라 쪽 혼합)으로 만듭니다.
 - 구름 캐릭터는 감정마다 표정이 다릅니다(`src/components/Mascot.tsx`). `emotion` 없이 쓰면 무표정인 브랜드 구름입니다.
 - 앱 아이콘·시작 화면 이미지는 `assets/`에 있으며, 구름 SVG에서 만든 PNG입니다.
 

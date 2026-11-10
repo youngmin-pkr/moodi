@@ -4,7 +4,7 @@ import { Text } from '../components/Text';
 import { router, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Header } from '../components/Header';
-import { Mascot } from '../components/Mascot';
+import { AnimatedMascot } from '../components/AnimatedMascot';
 import { PrimaryButton } from '../components/PrimaryButton';
 import { EMOTIONS, OTHER_EMOTION } from '../constants/emotions';
 import { colors, titleFont } from '../constants/theme';
@@ -12,6 +12,8 @@ import { colors, titleFont } from '../constants/theme';
 export default function EmotionScreen() {
   const { date } = useLocalSearchParams<{ date?: string }>();
   const [selected, setSelected] = useState<number | null>(null);
+  // 누를 때마다 올라가서, 이미 선택된 구름을 다시 눌러도 반응합니다.
+  const [taps, setTaps] = useState(0);
   // 좌우 여백 24px, 칸 사이 12px 기준으로 3열 너비를 계산합니다. (퍼센트는 반올림 오차로 줄바꿈이 깨질 수 있음)
   const { width } = useWindowDimensions();
   const cellWidth = Math.floor((Math.min(width, 520) - 48 - 24) / 3);
@@ -31,10 +33,14 @@ export default function EmotionScreen() {
                 accessibilityRole="button"
                 accessibilityLabel={e.name}
                 accessibilityState={{ selected: on }}
-                onPress={() => setSelected(i)}
+                onPress={() => {
+                  setSelected(i);
+                  setTaps((n) => n + 1);
+                }}
                 style={[styles.cell, { width: cellWidth, backgroundColor: e.soft }, on && { borderColor: colors.primary, backgroundColor: '#fff' }]}
               >
-                <Mascot emotion={i} size={72} />
+                {/* 선택된 구름만 움직입니다. 9개가 모두 움직이면 산만하고 배터리도 더 씁니다. */}
+                <AnimatedMascot emotion={i} size={72} idle={on} halo={on} sparkles={on} reactKey={on ? taps : 0} />
                 <Text style={[styles.name, on && { color: colors.primary }]}>{e.name}</Text>
               </Pressable>
             );

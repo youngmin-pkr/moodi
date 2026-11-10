@@ -1,16 +1,18 @@
+import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Text } from '../components/Text';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Wordmark } from '../components/Form';
 import { GradientBackground } from '../components/GradientBackground';
-import { Mascot } from '../components/Mascot';
+import { AnimatedMascot } from '../components/AnimatedMascot';
 import { PrimaryButton } from '../components/PrimaryButton';
 import { useToast } from '../components/Toast';
 import { colors } from '../constants/theme';
 
 export default function Welcome() {
   const toast = useToast();
+  const [pet, setPet] = useState(0);
   return (
     <SafeAreaView style={styles.safe}>
       <GradientBackground />
@@ -24,7 +26,9 @@ export default function Welcome() {
         <Text style={[styles.spark, { left: 56, top: 20 }]}>✦</Text>
         <Text style={[styles.spark, { right: 60, top: 0, fontSize: 18 }]}>✦</Text>
         <Text style={[styles.spark, { right: 70, bottom: 14, fontSize: 16 }]}>✦</Text>
-        <Mascot size={190} />
+        <Pressable accessibilityRole="button" accessibilityLabel="구름 쓰다듬기" onPress={() => setPet((n) => n + 1)}>
+          <AnimatedMascot size={190} reactKey={pet} />
+        </Pressable>
       </View>
 
       <View style={styles.bottom}>
