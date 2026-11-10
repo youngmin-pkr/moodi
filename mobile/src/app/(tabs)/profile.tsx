@@ -3,6 +3,7 @@ import { Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-nat
 import { router } from 'expo-router';
 import Constants from 'expo-constants';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTabBarPadding } from '../../components/FloatingTabBar';
 import { Icon, IconName } from '../../components/Icon';
 import { Mascot } from '../../components/Mascot';
 import { NameSheet } from '../../components/ProfileSheets';
@@ -41,6 +42,7 @@ function ToggleRow({ icon, label, hint, value, onChange }: { icon: IconName; lab
 }
 
 export default function Profile() {
+  const tabPad = useTabBarPadding();
   const { records, profile, updateProfile, replaceRecords } = useRecords();
   const toast = useToast();
   const [nameSheet, setNameSheet] = useState(false);
@@ -104,7 +106,7 @@ export default function Profile() {
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView contentContainerStyle={[styles.content, { paddingBottom: tabPad }]}>
         <Text style={styles.h1}>프로필</Text>
 
         <View style={styles.card}>

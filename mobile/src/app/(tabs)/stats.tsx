@@ -2,6 +2,7 @@ import { useMemo, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTabBarPadding } from '../../components/FloatingTabBar';
 import { BarChart, Donut } from '../../components/Charts';
 import { Icon } from '../../components/Icon';
 import { Mascot } from '../../components/Mascot';
@@ -33,6 +34,7 @@ function move(period: StatPeriod, anchor: string, dir: 1 | -1): string {
 }
 
 export default function Stats() {
+  const tabPad = useTabBarPadding();
   const { records } = useRecords();
   const [period, setPeriod] = useState<StatPeriod>('week');
   const [anchor, setAnchor] = useState(today());
@@ -62,7 +64,7 @@ export default function Stats() {
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView contentContainerStyle={[styles.content, { paddingBottom: tabPad }]}>
         <Text style={styles.title}>감정 통계</Text>
 
         <View style={styles.segment} accessibilityRole="tablist">

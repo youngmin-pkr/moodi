@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { useLocalSearchParams } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTabBarPadding } from '../../components/FloatingTabBar';
 import { EmptyState } from '../../components/EmptyState';
 import { Icon } from '../../components/Icon';
 import { MonthPicker } from '../../components/MonthPicker';
@@ -20,6 +21,7 @@ export default function RecordsScreen() {
 }
 
 function Records({ initialMonth, initialEmotion }: { initialMonth?: string; initialEmotion?: string }) {
+  const tabPad = useTabBarPadding();
   const { records } = useRecords();
   const [month, setMonth] = useState(() => (initialMonth && /^\d{4}-\d{2}$/.test(initialMonth) ? initialMonth : today().slice(0, 7)));
   const [emotion, setEmotion] = useState(() => {
@@ -37,7 +39,7 @@ function Records({ initialMonth, initialEmotion }: { initialMonth?: string; init
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
-      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+      <ScrollView contentContainerStyle={[styles.content, { paddingBottom: tabPad }]} keyboardShouldPersistTaps="handled">
         <View style={styles.top}>
           <View>
             <Text style={styles.eyebrow}>마음을 모아보는 시간</Text>

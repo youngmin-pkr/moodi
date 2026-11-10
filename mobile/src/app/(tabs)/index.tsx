@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTabBarPadding } from '../../components/FloatingTabBar';
 import { ComfortCard } from '../../components/ComfortCard';
 import { HeroArt } from '../../components/HeroArt';
 import { EmptyState } from '../../components/EmptyState';
@@ -17,6 +18,7 @@ import { sortRecords } from '../../lib/records';
 import { useRecords } from '../../state/RecordsContext';
 
 export default function Home() {
+  const tabPad = useTabBarPadding();
   const { records, ready, profile } = useRecords();
   const [reminderOpen, setReminderOpen] = useState(false);
   const latest = sortRecords(records)[0];
@@ -24,7 +26,7 @@ export default function Home() {
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView contentContainerStyle={[styles.content, { paddingBottom: tabPad }]}>
         <View style={styles.top}>
           <View style={styles.brand}>
             <Mascot size={36} />

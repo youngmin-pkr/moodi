@@ -1,12 +1,15 @@
 import Svg, { Circle, Defs, Ellipse, G, LinearGradient, Path, RadialGradient, Rect, Stop } from 'react-native-svg';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 const STAR = 'M0-7 L1.8-1.8 L7 0 L1.8 1.8 L0 7 L-1.8 1.8 L-7 0 L-1.8-1.8Z';
 
 /** 홈 소개 카드의 배경 일러스트: 노을빛 방 안, 창에서 드는 빛, 식물과 책, 구름 베개. */
 export function HeroArt() {
+  // 부모에 안쪽 여백(padding)이 있으면 Svg에 준 "100%"가 여백을 뺀 크기가 되어 그림이 작아집니다.
+  // 여백이 없는 래퍼 View가 카드 전체를 채우고, Svg는 그 래퍼를 채우게 합니다.
   return (
-    <Svg width="100%" height="100%" style={StyleSheet.absoluteFill} viewBox="0 0 340 230" preserveAspectRatio="xMidYMid slice" accessibilityElementsHidden importantForAccessibility="no">
+    <View pointerEvents="none" style={StyleSheet.absoluteFill}>
+    <Svg width="100%" height="100%" viewBox="0 0 340 230" preserveAspectRatio="xMidYMid slice" accessibilityElementsHidden importantForAccessibility="no">
       <Defs>
         <LinearGradient id="sky" x1="0" y1="0" x2="0.9" y2="1">
           <Stop offset="0" stopColor="#5f43b8" />
@@ -59,5 +62,6 @@ export function HeroArt() {
       <Path d="M0 206 Q90 172 170 200 T340 190 V230 H0Z" fill="#c6b4f4" opacity={0.75} />
       <Ellipse cx="58" cy="214" rx="64" ry="14" fill="#d9ccfa" opacity={0.5} />
     </Svg>
+    </View>
   );
 }
