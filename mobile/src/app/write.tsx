@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Image, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Image, Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Header } from '../components/Header';
@@ -53,17 +53,21 @@ export default function WriteScreen() {
 
   const add = async (get: () => Promise<{ uris: string[]; denied?: boolean }>) => {
     setSheet(false);
+    // 사진 시트(모달)가 완전히 닫히기 전에 앨범·카메라를 열면 열리지 않는 기기가 있어, 닫힌 뒤에 엽니다.
+    await new Promise((resolve) => setTimeout(resolve, 450));
     try {
       const res = await get();
       if (res.denied) toast('카메라 권한이 필요해요. 설정에서 허용해주세요.');
       else if (res.uris.length) setPhotos((p) => [...p, ...res.uris].slice(0, MAX_PHOTOS));
-    } catch {
-      toast('사진을 불러오지 못했어요. 다시 시도해주세요.');
+    } catch (e) {
+      toast(`사진을 불러오지 못했어요. (${e instanceof Error ? e.message : '알 수 없는 오류'})`);
     }
   };
 
   const save = async () => {
     if (saving) return;
+    // 키보드가 열려 있으면 아래쪽 안내 문구가 가려지므로 먼저 내립니다.
+    Keyboard.dismiss();
     const err = validateDraft({ emotion, title, body });
     if (err === 'content') return toast('내용을 입력해주세요');
     if (err === 'tooLong') return toast(`내용은 ${MAX_BODY_LENGTH.toLocaleString()}자까지 쓸 수 있어요.`);
@@ -92,7 +96,7 @@ export default function WriteScreen() {
     <SafeAreaView style={styles.safe}>
       <Header title={editing ? '기록 수정' : undefined} />
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-        <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+        <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag">
           <Text style={styles.date}>{dateText(date)}</Text>
           <View style={styles.top}>
             <Mascot emotion={emotion} size={84} />
@@ -143,7 +147,11 @@ export default function WriteScreen() {
               </View>
             ))}
             {photos.length < MAX_PHOTOS && (
-              <Pressable accessibilityRole="button" accessibilityLabel="사진 첨부" onPress={() => setSheet(true)} style={styles.addPhoto}>
+              <Pressable accessibilityRole="button" accessibilityLabel="사진 첨부" onPress={() => {
+                  Keyboard.dismiss();
+                  setSheet(true);
+                }}
+                style={styles.addPhoto}>
                 <Icon name="photo" color={colors.primary} />
                 <Text style={styles.addText}>
                   사진 첨부 {photos.length}/{MAX_PHOTOS}

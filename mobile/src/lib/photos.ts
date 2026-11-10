@@ -28,27 +28,43 @@ async function compressAndStore(uri: string, width: number, height: number): Pro
 
 export type PickResult = { uris: string[]; denied?: boolean };
 
+const reason = (e: unknown) => (e instanceof Error ? e.message : String(e)).slice(0, 80);
+
+/** 단계가 어디서 실패했는지 알 수 있도록 오류 메시지에 단계 이름을 붙입니다. */
+async function step<T>(name: string, run: () => Promise<T>): Promise<T> {
+  try {
+    return await run();
+  } catch (e) {
+    console.warn(`[photos] ${name} 실패`, e);
+    throw new Error(`${name} 실패: ${reason(e)}`);
+  }
+}
+
 export async function pickFromLibrary(remaining: number): Promise<PickResult> {
   if (remaining <= 0) return { uris: [] };
-  const res = await ImagePicker.launchImageLibraryAsync({
-    mediaTypes: ['images'],
-    allowsMultipleSelection: remaining > 1,
-    selectionLimit: remaining,
-    quality: 1,
-  });
+  const res = await step('앨범 열기', () =>
+    ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsMultipleSelection: remaining > 1,
+      selectionLimit: remaining,
+      quality: 1,
+    }),
+  );
   if (res.canceled) return { uris: [] };
   const uris: string[] = [];
-  for (const a of res.assets.slice(0, remaining)) uris.push(await compressAndStore(a.uri, a.width, a.height));
+  for (const a of res.assets.slice(0, remaining)) {
+    uris.push(await step('사진 처리', () => compressAndStore(a.uri, a.width, a.height)));
+  }
   return { uris };
 }
 
 export async function takePhoto(): Promise<PickResult> {
-  const perm = await ImagePicker.requestCameraPermissionsAsync();
+  const perm = await step('카메라 권한', () => ImagePicker.requestCameraPermissionsAsync());
   if (!perm.granted) return { uris: [], denied: true };
-  const res = await ImagePicker.launchCameraAsync({ mediaTypes: ['images'], quality: 1 });
+  const res = await step('카메라 열기', () => ImagePicker.launchCameraAsync({ mediaTypes: ['images'], quality: 1 }));
   if (res.canceled) return { uris: [] };
   const a = res.assets[0];
-  return { uris: [await compressAndStore(a.uri, a.width, a.height)] };
+  return { uris: [await step('사진 처리', () => compressAndStore(a.uri, a.width, a.height))] };
 }
 
 export function deletePhotos(uris: readonly string[]): void {
