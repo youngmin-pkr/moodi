@@ -9,7 +9,7 @@ import { NameSheet } from '../../components/ProfileSheets';
 import { ReminderSheetHost } from '../../components/ReminderSheetHost';
 import { ConfirmDialog } from '../../components/Sheets';
 import { useToast } from '../../components/Toast';
-import { colors } from '../../constants/theme';
+import { colors, titleFont } from '../../constants/theme';
 import { BackupError, mergeRecords } from '../../lib/backup';
 import { exportBackup, materializePhotos, pickBackup, PickedBackup } from '../../lib/backupIO';
 import { deletePhotos } from '../../lib/photos';
@@ -108,7 +108,7 @@ export default function Profile() {
         <Text style={styles.h1}>프로필</Text>
 
         <View style={styles.card}>
-          <Mascot emotion={8} size={92} />
+          <Mascot size={92} />
           <View style={{ flex: 1 }}>
             <Text style={styles.name}>{profile.name}님</Text>
             <Text style={styles.tagline}>오늘도 나를 알아가는 중</Text>
@@ -172,9 +172,9 @@ export default function Profile() {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.background },
   content: { paddingHorizontal: 20, paddingBottom: 32 },
-  h1: { fontSize: 30, fontWeight: '900', color: colors.text, marginTop: 24 },
+  h1: { ...titleFont, fontSize: 30, color: colors.text, marginTop: 24 },
   card: { flexDirection: 'row', alignItems: 'center', gap: 14, backgroundColor: '#e6dcf8', borderRadius: 24, padding: 18, marginTop: 20 },
-  name: { fontSize: 22, fontWeight: '900', color: colors.text },
+  name: { ...titleFont, fontSize: 22, color: colors.text },
   tagline: { fontSize: 12, color: colors.textSoft, marginTop: 4 },
   edit: { alignSelf: 'flex-start', backgroundColor: 'rgba(255,255,255,0.7)', borderRadius: 22, paddingHorizontal: 18, minHeight: 44, justifyContent: 'center', marginTop: 10 },
   editText: { fontSize: 13, fontWeight: '700', color: colors.text },

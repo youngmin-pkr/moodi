@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, Switch, Text, TextInput, View } from 'react-nati
 import { Backdrop } from './Sheets';
 import { PrimaryButton } from './PrimaryButton';
 import { Icon } from './Icon';
-import { colors } from '../constants/theme';
+import { colors, titleFont } from '../constants/theme';
 import { formatTime, Hm, koreanTime, parseTime, stepTime } from '../lib/time';
 
 export const MAX_NAME_LENGTH = 12;
@@ -104,7 +104,7 @@ function ReminderForm({ value, onSave, onTest, onClose }: { value: string | null
 }
 
 const styles = StyleSheet.create({
-  heading: { fontSize: 18, fontWeight: '800', color: colors.text, marginBottom: 14 },
+  heading: { ...titleFont, fontSize: 18, color: colors.text, marginBottom: 14 },
   label: { fontSize: 13, fontWeight: '700', color: colors.textSoft, marginBottom: 6 },
   input: { backgroundColor: '#faf7ff', borderRadius: 14, padding: 14, fontSize: 16, color: colors.text, borderWidth: 1, borderColor: colors.border },
   count: { alignSelf: 'flex-end', marginTop: 6, fontSize: 12, color: colors.textSoft },
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
   ampmText: { fontSize: 16, fontWeight: '800', color: colors.primary },
   stepper: { alignItems: 'center', gap: 2 },
   stepBtn: { width: 56, height: 48, alignItems: 'center', justifyContent: 'center' },
-  stepValue: { fontSize: 30, fontWeight: '900', color: colors.text, minWidth: 52, textAlign: 'center' },
+  stepValue: { ...titleFont, fontSize: 30, color: colors.text, minWidth: 52, textAlign: 'center' },
   colon: { fontSize: 28, fontWeight: '900', color: colors.text },
   closeBtn: { alignItems: 'center', justifyContent: 'center', minHeight: 44 },
   closeText: { fontSize: 15, fontWeight: '600', color: colors.textSoft },

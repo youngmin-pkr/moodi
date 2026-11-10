@@ -3,7 +3,7 @@ import { router } from 'expo-router';
 import { Icon } from './Icon';
 import { Mascot } from './Mascot';
 import { EMOTIONS } from '../constants/emotions';
-import { colors } from '../constants/theme';
+import { colors, titleFont } from '../constants/theme';
 import { dateText } from '../lib/date';
 import { emotionLabel } from '../lib/records';
 import { DiaryRecord } from '../types';
@@ -48,6 +48,6 @@ const styles = StyleSheet.create({
   date: { fontSize: 12, color: colors.textSoft },
   tag: { borderRadius: 10, paddingHorizontal: 8, paddingVertical: 2 },
   tagText: { fontSize: 11, fontWeight: '700', color: colors.text },
-  title: { fontSize: 16, fontWeight: '800', color: colors.text, marginTop: 4 },
+  title: { ...titleFont, fontSize: 16, color: colors.text, marginTop: 4 },
   line: { fontSize: 13, color: colors.textSoft, marginTop: 3 },
 });

@@ -9,7 +9,7 @@ import { Mascot } from '../../components/Mascot';
 import { ConfirmDialog } from '../../components/Sheets';
 import { useToast } from '../../components/Toast';
 import { EMOTIONS } from '../../constants/emotions';
-import { colors } from '../../constants/theme';
+import { colors, titleFont } from '../../constants/theme';
 import { dateText } from '../../lib/date';
 import { emotionLabel } from '../../lib/records';
 import { useRecords } from '../../state/RecordsContext';
@@ -88,8 +88,8 @@ const styles = StyleSheet.create({
   date: { fontSize: 13, color: colors.textSoft, fontWeight: '600' },
   tag: { alignSelf: 'flex-start', backgroundColor: 'rgba(255,255,255,0.75)', borderRadius: 12, paddingHorizontal: 10, paddingVertical: 3, marginTop: 8 },
   tagText: { fontSize: 12, fontWeight: '700', color: colors.text },
-  emotion: { fontSize: 20, fontWeight: '800', color: colors.text, marginTop: 4 },
-  title: { fontSize: 22, fontWeight: '800', color: colors.text, marginTop: 20 },
+  emotion: { ...titleFont, fontSize: 20, color: colors.text, marginTop: 4 },
+  title: { ...titleFont, fontSize: 22, color: colors.text, marginTop: 20 },
   body: { fontSize: 16, lineHeight: 26, color: colors.text, marginTop: 12 },
   photo: { width: '100%', aspectRatio: 1.3, borderRadius: 18, marginTop: 16, backgroundColor: '#eee' },
   footer: { flexDirection: 'row', gap: 10, paddingHorizontal: 24, paddingBottom: 16, paddingTop: 8 },

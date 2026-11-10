@@ -6,7 +6,7 @@ import { Header } from '../components/Header';
 import { Mascot } from '../components/Mascot';
 import { PrimaryButton } from '../components/PrimaryButton';
 import { EMOTIONS, OTHER_EMOTION } from '../constants/emotions';
-import { colors } from '../constants/theme';
+import { colors, titleFont } from '../constants/theme';
 
 export default function EmotionScreen() {
   const { date } = useLocalSearchParams<{ date?: string }>();
@@ -56,7 +56,7 @@ export default function EmotionScreen() {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.background },
   content: { paddingHorizontal: 24, paddingBottom: 24 },
-  title: { fontSize: 24, fontWeight: '800', color: colors.text, marginTop: 8 },
+  title: { ...titleFont, fontSize: 24, color: colors.text, marginTop: 8 },
   sub: { fontSize: 15, color: colors.textSoft, marginTop: 6, marginBottom: 20 },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 },
   cell: { aspectRatio: 0.9, borderRadius: 20, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: 'transparent' },

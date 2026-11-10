@@ -3,13 +3,14 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ComfortCard } from '../../components/ComfortCard';
+import { HeroArt } from '../../components/HeroArt';
 import { EmptyState } from '../../components/EmptyState';
 import { Icon } from '../../components/Icon';
 import { Mascot } from '../../components/Mascot';
 import { RecordCard } from '../../components/RecordCard';
 import { ReminderSheetHost } from '../../components/ReminderSheetHost';
 import { WeekStrip } from '../../components/WeekStrip';
-import { colors } from '../../constants/theme';
+import { colors, brandFont, titleFont } from '../../constants/theme';
 import { dateText, today } from '../../lib/date';
 import { koreanTime } from '../../lib/time';
 import { sortRecords } from '../../lib/records';
@@ -44,8 +45,7 @@ export default function Home() {
         <Text style={styles.h1}>오늘의 마음을{'\n'}가만히 펼쳐볼까요?</Text>
 
         <Pressable accessibilityRole="button" accessibilityLabel="오늘의 마음 기록하기" onPress={() => router.push('/emotion')} style={styles.hero}>
-          <View style={styles.blob1} />
-          <View style={styles.blob2} />
+          <HeroArt />
           <Text style={styles.heroSmall}>마음이 머무는 곳</Text>
           <Text style={styles.heroTitle}>어떤 마음이든{'\n'}여기서는 괜찮아요.</Text>
           <View style={styles.heroMascot}>
@@ -88,20 +88,18 @@ const styles = StyleSheet.create({
   top: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 8 },
   brand: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   bellDot: { position: 'absolute', top: 9, right: 10, width: 8, height: 8, borderRadius: 4, backgroundColor: '#e0679a', borderWidth: 1.5, borderColor: colors.background },
-  brandText: { fontSize: 22, fontWeight: '900', color: colors.primary, letterSpacing: 1.5 },
+  brandText: { ...brandFont, fontSize: 22, color: colors.primary, letterSpacing: 1.5 },
   icons: { flexDirection: 'row', marginRight: -10 },
   hit: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
   date: { fontSize: 14, color: colors.textSoft, marginTop: 14 },
-  h1: { fontSize: 26, fontWeight: '800', color: colors.text, lineHeight: 36, marginTop: 6 },
-  hero: { backgroundColor: colors.primary, borderRadius: 26, padding: 22, marginTop: 18, overflow: 'hidden', minHeight: 210 },
-  blob1: { position: 'absolute', right: -40, top: -40, width: 170, height: 170, borderRadius: 85, backgroundColor: 'rgba(255,255,255,0.10)' },
-  blob2: { position: 'absolute', right: 30, bottom: -60, width: 190, height: 150, borderRadius: 95, backgroundColor: 'rgba(255,255,255,0.12)' },
+  h1: { ...titleFont, fontSize: 26, color: colors.text, lineHeight: 36, marginTop: 6 },
+  hero: { backgroundColor: colors.primary, borderRadius: 26, padding: 22, marginTop: 18, overflow: 'hidden', minHeight: 230 },
   heroSmall: { fontSize: 12, color: '#efe8ff' },
-  heroTitle: { fontSize: 22, fontWeight: '800', color: '#fff', lineHeight: 31, marginTop: 10 },
+  heroTitle: { ...titleFont, fontSize: 22, color: '#fff', lineHeight: 31, marginTop: 10 },
   heroMascot: { position: 'absolute', right: 14, bottom: 42 },
-  heroCta: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 46 },
+  heroCta: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 66 },
   heroCtaText: { color: '#fff', fontSize: 14, fontWeight: '700' },
-  h2: { fontSize: 18, fontWeight: '800', color: colors.text, marginTop: 26, marginBottom: 12 },
+  h2: { ...titleFont, fontSize: 18, color: colors.text, marginTop: 26, marginBottom: 12 },
   sectionRow: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' },
   more: { fontSize: 13, fontWeight: '700', color: colors.primary },
   moreBtn: { minHeight: 44, justifyContent: 'center', paddingLeft: 12, marginBottom: 2 },

@@ -23,10 +23,11 @@ const PATHS = {
 
 export type IconName = keyof typeof PATHS;
 
-export function Icon({ name, size = 24, color = '#3f3556' }: { name: IconName; size?: number; color?: string }) {
+/** active이면 선 안쪽을 같은 색으로 옅게 채워 선택된 느낌을 줍니다. */
+export function Icon({ name, size = 24, color = '#3f3556', active = false }: { name: IconName; size?: number; color?: string; active?: boolean }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-      <Path d={PATHS[name]} />
+      <Path d={PATHS[name]} fill={active ? color : 'none'} fillOpacity={active ? 0.2 : 0} />
     </Svg>
   );
 }

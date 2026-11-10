@@ -10,7 +10,7 @@ import { PhotoSheet } from '../components/Sheets';
 import { PrimaryButton } from '../components/PrimaryButton';
 import { useToast } from '../components/Toast';
 import { EMOTIONS, MAX_CUSTOM_EMOTION_LENGTH, OTHER_EMOTION } from '../constants/emotions';
-import { colors } from '../constants/theme';
+import { colors, titleFont } from '../constants/theme';
 import { dateText, today } from '../lib/date';
 import { companion } from '../lib/companion';
 import { MAX_BODY_LENGTH, MAX_PHOTOS, newRecordId, normalizeCustomEmotion, validateDraft } from '../lib/records';
@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
   content: { paddingHorizontal: 24, paddingBottom: 24 },
   date: { fontSize: 14, color: colors.textSoft, fontWeight: '600' },
   top: { flexDirection: 'row', alignItems: 'center', gap: 12, marginVertical: 10 },
-  heading: { fontSize: 22, fontWeight: '800', color: colors.text },
+  heading: { ...titleFont, fontSize: 22, color: colors.text },
   hint: { fontSize: 13, color: colors.textSoft, marginTop: 4 },
   customBox: { marginBottom: 12 },
   customLabel: { fontSize: 13, fontWeight: '800', color: colors.text, marginBottom: 6 },

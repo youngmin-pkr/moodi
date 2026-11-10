@@ -2,6 +2,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Wordmark } from '../components/Form';
+import { GradientBackground } from '../components/GradientBackground';
 import { Mascot } from '../components/Mascot';
 import { PrimaryButton } from '../components/PrimaryButton';
 import { useToast } from '../components/Toast';
@@ -11,6 +12,7 @@ export default function Welcome() {
   const toast = useToast();
   return (
     <SafeAreaView style={styles.safe}>
+      <GradientBackground />
       <View style={styles.top}>
         <Text style={styles.eyebrow}>오늘의 마음이 머무는 구름,</Text>
         <Wordmark size={46} />
@@ -21,7 +23,7 @@ export default function Welcome() {
         <Text style={[styles.spark, { left: 56, top: 20 }]}>✦</Text>
         <Text style={[styles.spark, { right: 60, top: 0, fontSize: 18 }]}>✦</Text>
         <Text style={[styles.spark, { right: 70, bottom: 14, fontSize: 16 }]}>✦</Text>
-        <Mascot emotion={8} size={190} />
+        <Mascot size={190} />
       </View>
 
       <View style={styles.bottom}>

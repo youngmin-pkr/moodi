@@ -7,7 +7,7 @@ import { Icon } from '../../components/Icon';
 import { MonthPicker } from '../../components/MonthPicker';
 import { RecordCard } from '../../components/RecordCard';
 import { EMOTIONS } from '../../constants/emotions';
-import { colors } from '../../constants/theme';
+import { colors, titleFont } from '../../constants/theme';
 import { shiftMonth, today } from '../../lib/date';
 import { queryRecords } from '../../lib/records';
 import { useRecords } from '../../state/RecordsContext';
@@ -128,12 +128,12 @@ const styles = StyleSheet.create({
   content: { paddingHorizontal: 20, paddingBottom: 28 },
   top: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 20 },
   eyebrow: { fontSize: 12, fontWeight: '700', color: colors.primary },
-  h1: { fontSize: 28, fontWeight: '900', color: colors.text, marginTop: 2 },
+  h1: { ...titleFont, fontSize: 28, color: colors.text, marginTop: 2 },
   search: { marginTop: 14, backgroundColor: colors.surface, borderRadius: 14, paddingHorizontal: 16, paddingVertical: 12, fontSize: 15, color: colors.text, borderWidth: 1, borderColor: colors.border },
   period: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.surface, borderRadius: 18, paddingHorizontal: 16, paddingVertical: 6, marginTop: 16, borderWidth: 1, borderColor: colors.border },
   periodLabel: { flex: 1, alignItems: 'center', justifyContent: 'center', minHeight: 44 },
   hit: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
-  periodText: { fontSize: 17, fontWeight: '800', color: colors.text },
+  periodText: { ...titleFont, fontSize: 17, color: colors.text },
   chips: { gap: 8, paddingVertical: 14 },
   chip: { paddingHorizontal: 16, minHeight: 44, justifyContent: 'center', borderRadius: 22, backgroundColor: '#efe9fb' },
   chipOn: { backgroundColor: colors.primary },

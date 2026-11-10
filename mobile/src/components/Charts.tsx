@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
-import { colors } from '../constants/theme';
+import { colors, titleFont } from '../constants/theme';
 
 export type Bar = { label: string; count: number; color: string };
 
@@ -72,6 +72,6 @@ const styles = StyleSheet.create({
   col: { flex: 1, alignItems: 'center', gap: 4 },
   count: { fontSize: 12, color: colors.textSoft },
   label: { fontSize: 11, color: colors.textSoft },
-  donutNum: { fontSize: 26, fontWeight: '900', color: colors.text },
+  donutNum: { ...titleFont, fontSize: 26, color: colors.text },
   donutSub: { fontSize: 11, color: colors.textSoft },
 });

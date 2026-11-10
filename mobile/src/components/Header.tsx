@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { Icon } from './Icon';
-import { colors } from '../constants/theme';
+import { colors, titleFont } from '../constants/theme';
 
 export function Header({ title, onBack }: { title?: string; onBack?: () => void }) {
   return (
@@ -23,5 +23,5 @@ export function Header({ title, onBack }: { title?: string; onBack?: () => void 
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', minHeight: 48, paddingHorizontal: 16 },
   back: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
-  title: { marginLeft: 6, fontSize: 18, fontWeight: '700', color: colors.text },
+  title: { ...titleFont, marginLeft: 6, fontSize: 18, color: colors.text },
 });

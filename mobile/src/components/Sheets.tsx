@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Icon, IconName } from './Icon';
-import { colors } from '../constants/theme';
+import { colors, titleFont } from '../constants/theme';
 
 export function Backdrop({ visible, onClose, children, center }: { visible: boolean; onClose: () => void; children: React.ReactNode; center?: boolean }) {
   return (
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
   center: { justifyContent: 'center', padding: 28 },
   sheet: { backgroundColor: colors.surface, borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 22, paddingBottom: 30 },
   dialog: { backgroundColor: colors.surface, borderRadius: 22, padding: 22 },
-  heading: { fontSize: 18, fontWeight: '700', color: colors.text, marginBottom: 12 },
+  heading: { ...titleFont, fontSize: 18, color: colors.text, marginBottom: 12 },
   message: { fontSize: 15, color: colors.textSoft, lineHeight: 22, marginBottom: 18 },
   row: { flexDirection: 'row', alignItems: 'center', gap: 14, paddingVertical: 16, borderBottomWidth: 1, borderBottomColor: colors.border },
   rowText: { fontSize: 16, color: colors.text },

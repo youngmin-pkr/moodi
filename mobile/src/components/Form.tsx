@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, Text, TextInput, TextInputProps, View } from 'react-native';
-import { colors } from '../constants/theme';
+import { colors, brandFont } from '../constants/theme';
 
 export function Wordmark({ size = 44 }: { size?: number }) {
   return (
@@ -41,7 +41,7 @@ export function CheckRow({ checked, onChange, label, error }: { checked: boolean
 }
 
 const styles = StyleSheet.create({
-  wordmark: { fontWeight: '900', color: colors.primary, textAlign: 'center' },
+  wordmark: { ...brandFont, color: colors.primary, textAlign: 'center' },
   label: { fontSize: 14, fontWeight: '800', color: colors.text, marginBottom: 8 },
   input: { backgroundColor: colors.surface, borderRadius: 16, paddingHorizontal: 16, paddingVertical: 16, fontSize: 15, color: colors.text, borderWidth: 1, borderColor: colors.border },
   inputError: { borderColor: colors.danger },

@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ComfortCard } from '../components/ComfortCard';
 import { Mascot } from '../components/Mascot';
 import { PrimaryButton } from '../components/PrimaryButton';
-import { colors } from '../constants/theme';
+import { colors, titleFont } from '../constants/theme';
 import { useRecords } from '../state/RecordsContext';
 
 export default function SavedScreen() {
@@ -14,7 +14,7 @@ export default function SavedScreen() {
   return (
     <SafeAreaView style={styles.safe}>
       <View style={styles.center}>
-        <Mascot emotion={rec?.emotion ?? 8} size={150} />
+        <Mascot emotion={rec?.emotion} size={150} />
         <Text style={styles.title}>기록이 저장되었어요!</Text>
         <Text style={styles.msg}>오늘의 감정이{'\n'}소중히 기록 되었어요!</Text>
         <Text style={styles.thanks}>좋은 하루를 만들어주셔서 감사해요!</Text>
@@ -35,7 +35,7 @@ export default function SavedScreen() {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.background },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 24 },
-  title: { fontSize: 24, fontWeight: '800', color: colors.text, marginTop: 16 },
+  title: { ...titleFont, fontSize: 24, color: colors.text, marginTop: 16 },
   msg: { fontSize: 16, color: colors.text, textAlign: 'center', lineHeight: 24, marginTop: 10 },
   comfort: { alignSelf: 'stretch', marginTop: 22 },
   thanks: { fontSize: 13, color: colors.textSoft, marginTop: 14 },

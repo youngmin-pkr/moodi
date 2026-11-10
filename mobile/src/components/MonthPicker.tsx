@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Backdrop } from './Sheets';
 import { Icon } from './Icon';
-import { colors } from '../constants/theme';
+import { colors, titleFont } from '../constants/theme';
 
 /** 'YYYY-MM' 값을 고르는 연·월 선택 창 */
 export function MonthPicker({ visible, value, onPick, onClose }: { visible: boolean; value: string; onPick: (ym: string) => void; onClose: () => void }) {
@@ -42,7 +42,7 @@ export function MonthPicker({ visible, value, onPick, onClose }: { visible: bool
 
 const styles = StyleSheet.create({
   yearRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16, paddingHorizontal: 8 },
-  year: { fontSize: 18, fontWeight: '800', color: colors.text },
+  year: { ...titleFont, fontSize: 18, color: colors.text },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   cell: { width: '23%', paddingVertical: 12, borderRadius: 12, backgroundColor: '#f4effb', alignItems: 'center' },
   cellOn: { backgroundColor: colors.primary },

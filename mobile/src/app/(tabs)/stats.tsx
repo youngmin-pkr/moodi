@@ -7,7 +7,7 @@ import { Icon } from '../../components/Icon';
 import { Mascot } from '../../components/Mascot';
 import { RecordCard, openRecord } from '../../components/RecordCard';
 import { EMOTIONS } from '../../constants/emotions';
-import { colors } from '../../constants/theme';
+import { colors, titleFont } from '../../constants/theme';
 import { monthDay, parseDate, shiftDate, shiftMonthClamped, today } from '../../lib/date';
 import { emotionLabel, sortRecords } from '../../lib/records';
 import { countByEmotion, countByMonth, distinctDays, monthForEmotion, ratios, recordsInPeriod, topEmotion, weekDays, withJosa } from '../../lib/stats';
@@ -85,7 +85,7 @@ export default function Stats() {
         <Text style={styles.sub}>{subtitle}</Text>
 
         <View style={styles.banner}>
-          <Mascot emotion={top ?? 8} size={84} />
+          <Mascot emotion={top ?? undefined} size={84} />
           <View style={{ flex: 1 }}>
             <Text style={styles.bannerSmall}>가장 자주 찾아온 마음</Text>
             <Text style={styles.bannerTitle}>{top === null ? '아직 기록이 없어요' : EMOTIONS[top].name}</Text>
@@ -106,7 +106,7 @@ export default function Stats() {
                   style={styles.weekDay}
                 >
                   <Text style={styles.weekLabel}>{WEEKDAY[parseDate(date).getDay()]}</Text>
-                  <Mascot emotion={record ? record.emotion : 8} size={36} />
+                  <Mascot emotion={record ? record.emotion : undefined} size={36} />
                   <Text style={[styles.weekEmotion, !record && { color: '#cfc7dd' }]} numberOfLines={1}>{record ? emotionLabel(record) : '-'}</Text>
                 </Pressable>
               ))}
@@ -159,25 +159,25 @@ export default function Stats() {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.background },
   content: { paddingHorizontal: 20, paddingBottom: 32 },
-  title: { textAlign: 'center', fontSize: 18, fontWeight: '800', color: colors.text, marginTop: 16, marginBottom: 14 },
+  title: { ...titleFont, textAlign: 'center', fontSize: 18, color: colors.text, marginTop: 16, marginBottom: 14 },
   segment: { flexDirection: 'row', backgroundColor: '#efe9fb', borderRadius: 16, padding: 4 },
   seg: { flex: 1, alignItems: 'center', justifyContent: 'center', minHeight: 44, borderRadius: 12 },
   segOn: { backgroundColor: '#fff' },
   segText: { fontSize: 14, fontWeight: '600', color: colors.textSoft },
   segTextOn: { color: colors.text, fontWeight: '800' },
   nav: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 14 },
-  navLabel: { fontSize: 20, fontWeight: '900', color: colors.text },
+  navLabel: { ...titleFont, fontSize: 20, color: colors.text },
   sub: { textAlign: 'center', fontSize: 13, color: colors.textSoft, marginTop: 6 },
   banner: { flexDirection: 'row', alignItems: 'center', gap: 12, backgroundColor: '#e6dcf8', borderRadius: 22, padding: 16, marginTop: 16 },
   bannerSmall: { fontSize: 12, fontWeight: '700', color: colors.text },
-  bannerTitle: { fontSize: 24, fontWeight: '900', color: colors.text, marginTop: 4 },
+  bannerTitle: { ...titleFont, fontSize: 24, color: colors.text, marginTop: 4 },
   bannerDetail: { fontSize: 12, color: colors.textSoft, marginTop: 4 },
   weekRow: { flexDirection: 'row', gap: 4, marginTop: 16 },
   weekDay: { flex: 1, alignItems: 'center', gap: 4, backgroundColor: '#fff', borderRadius: 14, paddingVertical: 10, borderWidth: 1, borderColor: colors.border },
   weekLabel: { fontSize: 12, color: colors.textSoft },
   weekEmotion: { fontSize: 11, fontWeight: '700', color: colors.text },
   sectionRow: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' },
-  h2: { fontSize: 18, fontWeight: '800', color: colors.text, marginTop: 24, marginBottom: 12 },
+  h2: { ...titleFont, fontSize: 18, color: colors.text, marginTop: 24, marginBottom: 12 },
   more: { fontSize: 13, fontWeight: '700', color: colors.primary },
   moreBtn: { minHeight: 44, justifyContent: 'center', paddingLeft: 12, marginBottom: 2 },
   hit: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
