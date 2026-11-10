@@ -41,3 +41,18 @@ export function isValidDateString(s: unknown): s is string {
   if (typeof s !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(s)) return false;
   return toDateString(parseDate(s)) === s;
 }
+
+/** 'M월 D일' */
+export function monthDay(s: string): string {
+  const d = parseDate(s);
+  return `${d.getMonth() + 1}월 ${d.getDate()}일`;
+}
+
+/** 날짜를 월 단위로 옮깁니다. 31일 → 30일 달처럼 없는 날은 그 달의 마지막 날로 맞춥니다. */
+export function shiftMonthClamped(s: string, months: number): string {
+  const [y, m, day] = s.split('-').map(Number);
+  const target = new Date(y, m - 1 + months, 1, 12);
+  const last = new Date(target.getFullYear(), target.getMonth() + 1, 0, 12).getDate();
+  target.setDate(Math.min(day, last));
+  return toDateString(target);
+}

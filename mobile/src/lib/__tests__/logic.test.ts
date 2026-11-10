@@ -1,6 +1,6 @@
-import { shiftDate, shiftMonth, dateText, isValidDateString } from '../date';
+import { shiftDate, shiftMonth, dateText, isValidDateString, monthDay, shiftMonthClamped } from '../date';
 import { sortRecords, queryRecords, validateDraft, createSampleRecords } from '../records';
-import { recordsInPeriod, countByEmotion, topEmotion, ratios, countByMonth, monthForEmotion } from '../stats';
+import { recordsInPeriod, countByEmotion, topEmotion, ratios, countByMonth, monthForEmotion, withJosa, distinctDays, weekDays } from '../stats';
 import { createBackup, parseBackup, mergeRecords, BackupError } from '../backup';
 import { DiaryRecord } from '../../types';
 
@@ -106,5 +106,34 @@ describe('backup', () => {
   it('merges by id with backup winning', () => {
     const merged = mergeRecords([rec('1', '2026-10-01', 0), rec('2', '2026-10-02', 0)], [rec('2', '2026-10-02', 5), rec('3', '2026-10-03', 1)]);
     expect(merged.map((r) => [r.id, r.emotion])).toEqual([['1', 0], ['2', 5], ['3', 1]]);
+  });
+});
+
+describe('stats helpers', () => {
+  it('clamps month shifts to the last day', () => {
+    expect(shiftMonthClamped('2026-01-31', 1)).toBe('2026-02-28');
+    expect(shiftMonthClamped('2026-03-31', -1)).toBe('2026-02-28');
+    expect(shiftMonthClamped('2026-10-22', 1)).toBe('2026-11-22');
+    expect(shiftMonthClamped('2024-02-29', 12)).toBe('2025-02-28');
+    expect(shiftMonthClamped('2026-01-15', -1)).toBe('2025-12-15');
+  });
+  it('formats month/day', () => {
+    expect(monthDay('2026-10-03')).toBe('10월 3일');
+  });
+  it('attaches Korean particles by final consonant', () => {
+    expect(withJosa('행복', '을', '를')).toBe('행복을');
+    expect(withJosa('기타', '을', '를')).toBe('기타를');
+    expect(withJosa('우울', '이에요', '예요')).toBe('우울이에요');
+    expect(withJosa('기타', '이에요', '예요')).toBe('기타예요');
+  });
+  it('counts distinct days and builds the 7-day strip', () => {
+    const rs = [rec('1', '2026-10-22', 0), rec('2', '2026-10-22', 1), rec('3', '2026-10-20', 2)];
+    expect(distinctDays(rs)).toBe(2);
+    const strip = weekDays(rs, '2026-10-22');
+    expect(strip.map((d) => d.date)[0]).toBe('2026-10-16');
+    expect(strip[6].date).toBe('2026-10-22');
+    expect(strip[6].record?.id).toBe('2'); // 같은 날이면 나중에 만든 기록
+    expect(strip[4].record?.id).toBe('3'); // 10-20
+    expect(strip[0].record).toBeNull();
   });
 });

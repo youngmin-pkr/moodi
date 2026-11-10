@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useLocalSearchParams } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { EmptyState } from '../../components/EmptyState';
@@ -13,11 +14,23 @@ import { useRecords } from '../../state/RecordsContext';
 
 export default function Records() {
   const { records } = useRecords();
+  // 통계 화면에서 감정을 눌러 넘어오면 그 달·그 감정으로 목록을 엽니다. (t는 같은 값을 다시 눌러도 반응하게 하는 시각)
+  const params = useLocalSearchParams<{ month?: string; emotion?: string; t?: string }>();
   const [month, setMonth] = useState(today().slice(0, 7));
   const [emotion, setEmotion] = useState(-1);
   const [search, setSearch] = useState('');
   const [searching, setSearching] = useState(false);
   const [picker, setPicker] = useState(false);
+
+  useEffect(() => {
+    if (params.month && /^\d{4}-\d{2}$/.test(params.month)) setMonth(params.month);
+    if (params.emotion !== undefined) {
+      const e = Number(params.emotion);
+      if (Number.isInteger(e) && e >= -1 && e < EMOTIONS.length) setEmotion(e);
+    }
+    setSearch('');
+    setSearching(false);
+  }, [params.month, params.emotion, params.t]);
 
   const list = useMemo(() => queryRecords(records, { month, emotion, search }), [records, month, emotion, search]);
   const [y, m] = month.split('-');

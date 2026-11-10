@@ -1,6 +1,7 @@
 import { DiaryRecord, StatPeriod } from '../types';
 import { shiftDate } from './date';
 import { EMOTIONS } from '../constants/emotions';
+import { sortRecords } from './records';
 
 /**
  * 기준일(anchor)이 속한 기간의 기록만 고릅니다.
@@ -57,4 +58,27 @@ export function monthForEmotion(
     .map((r) => r.date)
     .sort()[0];
   return (first ?? anchor).slice(0, 7);
+}
+
+const hasFinalConsonant = (word: string) => {
+  const code = word.charCodeAt(word.length - 1) - 0xac00;
+  return code >= 0 && code <= 11171 && code % 28 !== 0;
+};
+
+/** 받침에 따라 조사를 붙입니다. 예: 행복+을/를 → '행복을', 기타 → '기타를' */
+export function withJosa(word: string, withFinal: string, withoutFinal: string): string {
+  return word + (hasFinalConsonant(word) ? withFinal : withoutFinal);
+}
+
+/** 기록이 있는 서로 다른 날짜 수 */
+export function distinctDays(records: readonly DiaryRecord[]): number {
+  return new Set(records.map((r) => r.date)).size;
+}
+
+/** 기준일 포함 최근 7일(오래된 날 → 기준일)과 그날의 대표 기록(같은 날이면 정렬상 첫 기록) */
+export function weekDays(records: readonly DiaryRecord[], anchor: string): { date: string; record: DiaryRecord | null }[] {
+  return Array.from({ length: 7 }, (_, i) => {
+    const date = shiftDate(anchor, i - 6);
+    return { date, record: sortRecords(records).find((r) => r.date === date) ?? null };
+  });
 }
