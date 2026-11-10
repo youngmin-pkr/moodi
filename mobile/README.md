@@ -1,0 +1,81 @@
+# MOODI · 내 감정 기록 (모바일 앱)
+
+스토리보드(`../새 폴더/박영민_스토리보드.pdf`)와 화면 이미지 20장을 바탕으로 만든 **React Native (Expo) 앱**입니다.
+루트의 웹앱(`../index.html`, `app.js`)과 같은 기능·디자인이며, 웹앱의 백업 파일도 불러올 수 있습니다.
+
+## 실행하기 (Expo Go)
+
+1. 휴대폰에 **Expo Go** 앱을 설치합니다. (App Store / Play 스토어)
+2. 노트북과 휴대폰을 **같은 Wi-Fi**에 연결합니다.
+3. 터미널에서 실행합니다.
+
+```bash
+cd mobile
+npm install
+npx expo start
+```
+
+4. 터미널에 나오는 QR 코드를 읽습니다. (아이폰은 기본 카메라, 안드로이드는 Expo Go의 "Scan QR code")
+
+연결이 안 되면 `npx expo start --tunnel`을 써 보세요. 실행 중 `w`를 누르면 브라우저로도 열립니다(카메라·알림·파일 저장은 휴대폰에서만 동작).
+
+## 명령어
+
+| 명령 | 설명 |
+|---|---|
+| `npm start` | 개발 서버 실행 |
+| `npm test` | 단위 테스트 (날짜·통계·백업·입력 검사 등) |
+| `npm run typecheck` | 타입 검사 |
+| `npm run lint` | 린트 검사 |
+
+## 기능
+
+- **기록**: 감정 9종 선택 → 제목·내용(필수, 2,000자) → 사진 최대 3장(카메라·앨범, 긴 변 1,000px로 압축) → 저장 완료 → 상세·수정·삭제(확인 창)
+- **홈·기록 목록**: 이번 주 7일 구름, 최근 기록, 월 이동(연·월 선택), 감정 필터, 제목·내용 검색
+- **통계**: 주간·월간·연간, 막대그래프·원그래프·감정 비율, 감정을 누르면 해당 기록 목록으로 이동
+- **프로필**: 닉네임 변경, **매일 기록 알림**(로컬 알림), **백업 내보내기·불러오기**(JSON), 예시 기록 지우기
+- **로그인·회원가입**: 화면과 입력 검사만 있는 체험용입니다. 실제 인증은 연결되어 있지 않습니다.
+
+## 데이터와 개인정보
+
+- 기록은 휴대폰 안(`AsyncStorage`, 키 `moodi.records`·`moodi.profile`)에, 사진은 앱 문서 폴더(`photos/`)에 저장됩니다. 서버로 보내지 않습니다.
+- 앱을 지우면 기록도 사라집니다. 중요한 기록은 프로필 → **기록 백업하기**로 JSON 파일을 보관하세요.
+- 백업 파일은 사진을 base64로 담습니다. 형식은 웹앱과 같습니다: `{ version: 1, exportedAt, records, profile }`.
+- 불러오기는 현재 기록과 **합칩니다**(같은 id는 백업 내용으로 바뀜). 닉네임은 복원되지만 알림 시간은 이 기기 설정을 유지합니다.
+- 로그인·회원가입 화면에 입력한 이메일·비밀번호는 저장하거나 전송하지 않습니다. 회원가입의 닉네임만 이 기기 프로필에 저장됩니다.
+- 마이크 권한은 요청하지 않습니다.
+
+## 폴더 구조
+
+```
+mobile/
+├─ src/
+│  ├─ app/           화면 (Expo Router: 파일 이름 = 경로)
+│  │  ├─ (tabs)/     하단 탭: 홈·기록·통계·프로필 (+ 새 기록 버튼)
+│  │  ├─ emotion·write·saved·record/[id]   기록 흐름
+│  │  └─ welcome·login·signup              체험용 계정 화면
+│  ├─ components/    공용 UI (구름 캐릭터, 차트, 시트, 폼 …)
+│  ├─ lib/           화면과 무관한 로직 (날짜·통계·백업·알림·사진·저장소)
+│  │  └─ __tests__/  단위 테스트
+│  ├─ state/         기록·프로필 상태 (Context)
+│  └─ constants/     감정 9종, 색상
+├─ assets/           앱 아이콘·시작 화면 이미지
+├─ app.json          앱 이름·권한 문구·플러그인
+└─ eas.json          EAS 빌드 설정
+```
+
+감정은 배열 **인덱스**로 저장됩니다(`src/constants/emotions.ts`). 순서를 바꾸면 기존 기록의 감정이 달라지니 끝에만 추가하세요.
+
+## 알아둘 점
+
+- **알림**: 안드로이드의 Expo Go는 알림 기능이 일부 제한됩니다. 알림이 필요하면 개발용 빌드를 쓰세요: `npx eas-cli@latest build --profile development --platform android`
+- **월간 통계**: 스토리보드 본문은 "최근 30일"이지만 같은 장의 그림(`< 2026년 10월 >`)에 맞춰 달력 기준 한 달로 만들었습니다.
+- **앱 잠금**은 아직 없습니다(프로필에 "준비 중"으로 표시).
+- **네이티브 라이브러리**(`react-native-keyboard-controller`, `reanimated`, `worklets`)는 Expo SDK가 정한 정확한 버전으로 고정되어 있습니다. 올릴 때는 `npx expo install --fix`를 쓰세요.
+
+## 스토어 배포 (참고)
+
+1. Expo 계정을 만들고 `npx eas-cli@latest login` → `npx eas-cli@latest init`
+2. 테스트용 설치 파일: `npx eas-cli@latest build --profile preview --platform android`
+3. 스토어용: `build --profile production` 후 `submit` (Apple 개발자 계정 연 $99, Google Play 등록 $25 필요)
+4. 앱 식별자(`com.moodi.diary`)는 `app.json`에서 원하는 값으로 바꿀 수 있으며, 스토어 등록 전에 정해야 합니다.

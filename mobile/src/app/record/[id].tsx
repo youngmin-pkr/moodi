@@ -33,7 +33,8 @@ export default function RecordDetail() {
     setConfirm(false);
     if (await removeRecord(rec.id)) {
       toast('기록을 삭제했어요');
-      router.canGoBack() ? router.back() : router.replace('/');
+      if (router.canGoBack()) router.back();
+      else router.replace('/');
     } else toast('삭제하지 못했어요. 다시 시도해주세요.');
   };
 

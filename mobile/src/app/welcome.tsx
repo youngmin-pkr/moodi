@@ -28,11 +28,11 @@ export default function Welcome() {
         <PrimaryButton label="카카오로 계속하기" onPress={() => toast('카카오 로그인은 아직 연결되지 않았어요.')} />
         <PrimaryButton label="Apple로 계속하기" variant="secondary" onPress={() => toast('Apple 로그인은 아직 연결되지 않았어요.')} />
         <View style={styles.links}>
-          <Pressable accessibilityRole="button" onPress={() => router.push('/login')} hitSlop={8}>
+          <Pressable accessibilityRole="button" onPress={() => router.push('/login')} style={styles.linkBtn}>
             <Text style={styles.link}>이메일 로그인</Text>
           </Pressable>
           <Text style={styles.dot}>·</Text>
-          <Pressable accessibilityRole="button" onPress={() => router.push('/signup')} hitSlop={8}>
+          <Pressable accessibilityRole="button" onPress={() => router.push('/signup')} style={styles.linkBtn}>
             <Text style={styles.link}>회원가입</Text>
           </Pressable>
         </View>
@@ -53,10 +53,11 @@ const styles = StyleSheet.create({
   hero: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   spark: { position: 'absolute', fontSize: 24, color: '#b69bdf' },
   bottom: { gap: 10, paddingBottom: 12 },
-  links: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 10, marginTop: 6 },
+  links: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 4, marginTop: 2 },
+  linkBtn: { minHeight: 44, justifyContent: 'center', paddingHorizontal: 10 },
   link: { fontSize: 14, fontWeight: '800', color: colors.textSoft },
   dot: { color: colors.textSoft },
-  guest: { alignItems: 'center', paddingVertical: 6 },
+  guest: { alignItems: 'center', justifyContent: 'center', minHeight: 44 },
   guestText: { fontSize: 14, fontWeight: '700', color: colors.primary, textDecorationLine: 'underline' },
   note: { textAlign: 'center', fontSize: 11, lineHeight: 17, color: colors.textSoft, marginTop: 4 },
 });

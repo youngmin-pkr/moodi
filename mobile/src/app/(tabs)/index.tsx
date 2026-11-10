@@ -25,10 +25,10 @@ export default function Home() {
             <Text style={styles.brandText}>MOODI</Text>
           </View>
           <View style={styles.icons}>
-            <Pressable accessibilityRole="button" accessibilityLabel="프로필" hitSlop={8} onPress={() => router.navigate('/profile')}>
+            <Pressable accessibilityRole="button" accessibilityLabel="프로필" onPress={() => router.navigate('/profile')} style={styles.hit}>
               <Icon name="profile" color={colors.primary} />
             </Pressable>
-            <Pressable accessibilityRole="button" accessibilityLabel="기록 알림" hitSlop={8} onPress={() => router.navigate('/profile')}>
+            <Pressable accessibilityRole="button" accessibilityLabel="기록 알림" onPress={() => router.navigate('/profile')} style={styles.hit}>
               <Icon name="bell" color={colors.primary} />
             </Pressable>
           </View>
@@ -57,7 +57,7 @@ export default function Home() {
 
         <View style={styles.sectionRow}>
           <Text style={styles.h2}>최근 기록</Text>
-          <Pressable accessibilityRole="button" onPress={() => router.navigate('/records')} hitSlop={8}>
+          <Pressable accessibilityRole="button" onPress={() => router.navigate('/records')} style={styles.moreBtn}>
             <Text style={styles.more}>전체 보기 ›</Text>
           </Pressable>
         </View>
@@ -74,7 +74,8 @@ const styles = StyleSheet.create({
   top: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 8 },
   brand: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   brandText: { fontSize: 22, fontWeight: '900', color: colors.primary, letterSpacing: 1.5 },
-  icons: { flexDirection: 'row', gap: 18 },
+  icons: { flexDirection: 'row', marginRight: -10 },
+  hit: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
   date: { fontSize: 14, color: colors.textSoft, marginTop: 14 },
   h1: { fontSize: 26, fontWeight: '800', color: colors.text, lineHeight: 36, marginTop: 6 },
   hero: { backgroundColor: colors.primary, borderRadius: 26, padding: 22, marginTop: 18, overflow: 'hidden', minHeight: 210 },
@@ -87,6 +88,7 @@ const styles = StyleSheet.create({
   heroCtaText: { color: '#fff', fontSize: 14, fontWeight: '700' },
   h2: { fontSize: 18, fontWeight: '800', color: colors.text, marginTop: 26, marginBottom: 12 },
   sectionRow: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' },
-  more: { fontSize: 13, fontWeight: '700', color: colors.primary, marginBottom: 12 },
+  more: { fontSize: 13, fontWeight: '700', color: colors.primary },
+  moreBtn: { minHeight: 44, justifyContent: 'center', paddingLeft: 12, marginBottom: 2 },
   note: { textAlign: 'center', fontSize: 12, color: colors.textSoft, marginTop: 4 },
 });

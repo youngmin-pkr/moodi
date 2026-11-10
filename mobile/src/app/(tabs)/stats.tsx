@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -36,6 +36,7 @@ export default function Stats() {
   const { records } = useRecords();
   const [period, setPeriod] = useState<StatPeriod>('week');
   const [anchor, setAnchor] = useState(today());
+  const navCount = useRef(0);
 
   const rs = useMemo(() => recordsInPeriod(records, period, anchor), [records, period, anchor]);
   const counts = useMemo(() => countByEmotion(rs), [rs]);
@@ -57,7 +58,7 @@ export default function Stats() {
         : `${total}개의 기록 중 ${counts[top]}개가 ${withJosa(EMOTIONS[top].name, '이에요', '예요')}.`;
 
   const openEmotion = (emotion: number) =>
-    router.navigate({ pathname: '/records', params: { month: monthForEmotion(records, period, anchor, emotion), emotion: String(emotion), t: String(Date.now()) } });
+    router.navigate({ pathname: '/records', params: { month: monthForEmotion(records, period, anchor, emotion), emotion: String(emotion), t: String(++navCount.current) } });
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
@@ -73,11 +74,11 @@ export default function Stats() {
         </View>
 
         <View style={styles.nav}>
-          <Pressable accessibilityRole="button" accessibilityLabel="이전 기간" hitSlop={12} onPress={() => setAnchor(move(period, anchor, -1))}>
+          <Pressable accessibilityRole="button" accessibilityLabel="이전 기간" onPress={() => setAnchor(move(period, anchor, -1))} style={styles.hit}>
             <Icon name="back" size={20} />
           </Pressable>
           <Text style={styles.navLabel}>{periodLabel(period, anchor)}</Text>
-          <Pressable accessibilityRole="button" accessibilityLabel="다음 기간" hitSlop={12} onPress={() => setAnchor(move(period, anchor, 1))}>
+          <Pressable accessibilityRole="button" accessibilityLabel="다음 기간" onPress={() => setAnchor(move(period, anchor, 1))} style={styles.hit}>
             <Icon name="next" size={20} />
           </Pressable>
         </View>
@@ -112,7 +113,7 @@ export default function Stats() {
             </View>
             <View style={styles.sectionRow}>
               <Text style={styles.h2}>{anchor === today() ? '이번 주 기록' : '이 주의 기록'}</Text>
-              <Pressable accessibilityRole="button" hitSlop={8} onPress={() => router.navigate('/records')}>
+              <Pressable accessibilityRole="button" onPress={() => router.navigate('/records')} style={styles.moreBtn}>
                 <Text style={styles.more}>전체 보기 ›</Text>
               </Pressable>
             </View>
@@ -160,11 +161,11 @@ const styles = StyleSheet.create({
   content: { paddingHorizontal: 20, paddingBottom: 32 },
   title: { textAlign: 'center', fontSize: 18, fontWeight: '800', color: colors.text, marginTop: 16, marginBottom: 14 },
   segment: { flexDirection: 'row', backgroundColor: '#efe9fb', borderRadius: 16, padding: 4 },
-  seg: { flex: 1, alignItems: 'center', paddingVertical: 11, borderRadius: 12 },
+  seg: { flex: 1, alignItems: 'center', justifyContent: 'center', minHeight: 44, borderRadius: 12 },
   segOn: { backgroundColor: '#fff' },
   segText: { fontSize: 14, fontWeight: '600', color: colors.textSoft },
   segTextOn: { color: colors.text, fontWeight: '800' },
-  nav: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 22, paddingHorizontal: 8 },
+  nav: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 14 },
   navLabel: { fontSize: 20, fontWeight: '900', color: colors.text },
   sub: { textAlign: 'center', fontSize: 13, color: colors.textSoft, marginTop: 6 },
   banner: { flexDirection: 'row', alignItems: 'center', gap: 12, backgroundColor: '#e6dcf8', borderRadius: 22, padding: 16, marginTop: 16 },
@@ -177,13 +178,15 @@ const styles = StyleSheet.create({
   weekEmotion: { fontSize: 11, fontWeight: '700', color: colors.text },
   sectionRow: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' },
   h2: { fontSize: 18, fontWeight: '800', color: colors.text, marginTop: 24, marginBottom: 12 },
-  more: { fontSize: 13, fontWeight: '700', color: colors.primary, marginBottom: 12 },
+  more: { fontSize: 13, fontWeight: '700', color: colors.primary },
+  moreBtn: { minHeight: 44, justifyContent: 'center', paddingLeft: 12, marginBottom: 2 },
+  hit: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
   unit: { fontSize: 12, color: colors.textSoft, marginBottom: 12 },
   empty: { textAlign: 'center', fontSize: 13, color: colors.textSoft, marginTop: 8 },
   hint: { fontSize: 12, color: colors.textSoft, lineHeight: 18 },
   ratio: { flexDirection: 'row', alignItems: 'center', gap: 18, marginTop: 14 },
   legend: { flex: 1, gap: 4 },
-  legendRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 7, gap: 8 },
+  legendRow: { flexDirection: 'row', alignItems: 'center', minHeight: 44, gap: 8 },
   dot: { width: 10, height: 10, borderRadius: 5 },
   legendName: { flex: 1, fontSize: 14, color: colors.text },
   legendPct: { fontSize: 14, fontWeight: '800', color: colors.text },

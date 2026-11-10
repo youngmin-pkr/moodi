@@ -16,13 +16,16 @@ export function Backdrop({ visible, onClose, children, center }: { visible: bool
   );
 }
 
-export function PhotoSheet({ visible, onClose, onCamera, onLibrary }: { visible: boolean; onClose: () => void; onCamera: () => void; onLibrary: () => void }) {
-  const Row = ({ icon, label, onPress }: { icon: IconName; label: string; onPress: () => void }) => (
+function Row({ icon, label, onPress }: { icon: IconName; label: string; onPress: () => void }) {
+  return (
     <Pressable accessibilityRole="button" onPress={onPress} style={styles.row}>
       <Icon name={icon} color={colors.primary} />
       <Text style={styles.rowText}>{label}</Text>
     </Pressable>
   );
+}
+
+export function PhotoSheet({ visible, onClose, onCamera, onLibrary }: { visible: boolean; onClose: () => void; onCamera: () => void; onLibrary: () => void }) {
   return (
     <Backdrop visible={visible} onClose={onClose}>
       <Text style={styles.heading}>사진 첨부</Text>

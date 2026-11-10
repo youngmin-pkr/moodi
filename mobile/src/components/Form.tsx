@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
   input: { backgroundColor: colors.surface, borderRadius: 16, paddingHorizontal: 16, paddingVertical: 16, fontSize: 15, color: colors.text, borderWidth: 1, borderColor: colors.border },
   inputError: { borderColor: colors.danger },
   error: { fontSize: 12, color: colors.danger, marginTop: 5, minHeight: 16 },
-  checkRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 10, marginTop: 8 },
+  checkRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 10, marginTop: 8, minHeight: 44 },
   box: { width: 24, height: 24, borderRadius: 7, borderWidth: 1.5, borderColor: colors.primary, alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' },
   boxOn: { backgroundColor: colors.primary },
   boxError: { borderColor: colors.danger },

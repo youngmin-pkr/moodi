@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useLocalSearchParams } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -12,25 +12,23 @@ import { shiftMonth, today } from '../../lib/date';
 import { queryRecords } from '../../lib/records';
 import { useRecords } from '../../state/RecordsContext';
 
-export default function Records() {
-  const { records } = useRecords();
-  // 통계 화면에서 감정을 눌러 넘어오면 그 달·그 감정으로 목록을 엽니다. (t는 같은 값을 다시 눌러도 반응하게 하는 시각)
+export default function RecordsScreen() {
+  // 통계 화면에서 감정을 눌러 넘어오면 그 달·그 감정으로 목록을 엽니다.
+  // t가 바뀔 때마다 화면 상태를 새로 시작하므로, 같은 감정을 다시 눌러도 반응합니다.
   const params = useLocalSearchParams<{ month?: string; emotion?: string; t?: string }>();
-  const [month, setMonth] = useState(today().slice(0, 7));
-  const [emotion, setEmotion] = useState(-1);
+  return <Records key={params.t ?? 'default'} initialMonth={params.month} initialEmotion={params.emotion} />;
+}
+
+function Records({ initialMonth, initialEmotion }: { initialMonth?: string; initialEmotion?: string }) {
+  const { records } = useRecords();
+  const [month, setMonth] = useState(() => (initialMonth && /^\d{4}-\d{2}$/.test(initialMonth) ? initialMonth : today().slice(0, 7)));
+  const [emotion, setEmotion] = useState(() => {
+    const e = Number(initialEmotion);
+    return initialEmotion !== undefined && Number.isInteger(e) && e >= -1 && e < EMOTIONS.length ? e : -1;
+  });
   const [search, setSearch] = useState('');
   const [searching, setSearching] = useState(false);
   const [picker, setPicker] = useState(false);
-
-  useEffect(() => {
-    if (params.month && /^\d{4}-\d{2}$/.test(params.month)) setMonth(params.month);
-    if (params.emotion !== undefined) {
-      const e = Number(params.emotion);
-      if (Number.isInteger(e) && e >= -1 && e < EMOTIONS.length) setEmotion(e);
-    }
-    setSearch('');
-    setSearching(false);
-  }, [params.month, params.emotion, params.t]);
 
   const list = useMemo(() => queryRecords(records, { month, emotion, search }), [records, month, emotion, search]);
   const [y, m] = month.split('-');
@@ -48,7 +46,7 @@ export default function Records() {
           <Pressable
             accessibilityRole="button"
             accessibilityLabel="기록 검색"
-            hitSlop={10}
+            style={styles.hit}
             onPress={() => {
               if (searching) setSearch('');
               setSearching((v) => !v);
@@ -76,10 +74,10 @@ export default function Records() {
           <Pressable accessibilityRole="button" accessibilityLabel="월 선택" onPress={() => setPicker(true)} style={styles.periodLabel}>
             <Text style={styles.periodText}>{y}년 {Number(m)}월</Text>
           </Pressable>
-          <Pressable accessibilityRole="button" accessibilityLabel="이전 달" hitSlop={10} onPress={() => setMonth(shiftMonth(month, -1))}>
+          <Pressable accessibilityRole="button" accessibilityLabel="이전 달" onPress={() => setMonth(shiftMonth(month, -1))} style={styles.hit}>
             <Icon name="back" size={20} />
           </Pressable>
-          <Pressable accessibilityRole="button" accessibilityLabel="다음 달" hitSlop={10} onPress={() => setMonth(shiftMonth(month, 1))} style={{ marginLeft: 14 }}>
+          <Pressable accessibilityRole="button" accessibilityLabel="다음 달" onPress={() => setMonth(shiftMonth(month, 1))} style={styles.hit}>
             <Icon name="next" size={20} />
           </Pressable>
         </View>
@@ -132,11 +130,12 @@ const styles = StyleSheet.create({
   eyebrow: { fontSize: 12, fontWeight: '700', color: colors.primary },
   h1: { fontSize: 28, fontWeight: '900', color: colors.text, marginTop: 2 },
   search: { marginTop: 14, backgroundColor: colors.surface, borderRadius: 14, paddingHorizontal: 16, paddingVertical: 12, fontSize: 15, color: colors.text, borderWidth: 1, borderColor: colors.border },
-  period: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.surface, borderRadius: 18, paddingHorizontal: 16, paddingVertical: 14, marginTop: 16, borderWidth: 1, borderColor: colors.border },
-  periodLabel: { flex: 1, alignItems: 'center' },
+  period: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.surface, borderRadius: 18, paddingHorizontal: 16, paddingVertical: 6, marginTop: 16, borderWidth: 1, borderColor: colors.border },
+  periodLabel: { flex: 1, alignItems: 'center', justifyContent: 'center', minHeight: 44 },
+  hit: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
   periodText: { fontSize: 17, fontWeight: '800', color: colors.text },
   chips: { gap: 8, paddingVertical: 14 },
-  chip: { paddingHorizontal: 16, paddingVertical: 8, borderRadius: 18, backgroundColor: '#efe9fb' },
+  chip: { paddingHorizontal: 16, minHeight: 44, justifyContent: 'center', borderRadius: 22, backgroundColor: '#efe9fb' },
   chipOn: { backgroundColor: colors.primary },
   chipText: { fontSize: 14, fontWeight: '700', color: colors.textSoft },
   count: { fontSize: 13, color: colors.textSoft, marginBottom: 12 },

@@ -7,7 +7,7 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "ios": {
-      "supportsTablet": true,
+      "supportsTablet": false,
       "bundleIdentifier": "com.moodi.diary"
     },
     "android": {
@@ -18,7 +18,10 @@
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.moodi.diary"
+      "package": "com.moodi.diary",
+      "blockedPermissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png",
@@ -29,6 +32,15 @@
     "plugins": [
       "expo-router",
       [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 200,
+          "backgroundColor": "#faf7ff",
+          "resizeMode": "contain"
+        }
+      ],
+      [
         "expo-notifications",
         {
           "color": "#7c61ce"
@@ -38,9 +50,13 @@
         "expo-image-picker",
         {
           "photosPermission": "일기에 첨부할 사진을 고르기 위해 앨범에 접근해요.",
-          "cameraPermission": "일기에 첨부할 사진을 찍기 위해 카메라를 사용해요."
+          "cameraPermission": "일기에 첨부할 사진을 찍기 위해 카메라를 사용해요.",
+          "microphonePermission": false
         }
       ]
-    ]
+    ],
+    "description": "오늘의 마음이 머무는 구름, MOODI 감정 일기",
+    "primaryColor": "#7c61ce",
+    "backgroundColor": "#faf7ff"
   }
 }

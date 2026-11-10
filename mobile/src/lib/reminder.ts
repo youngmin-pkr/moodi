@@ -32,6 +32,8 @@ export async function applyReminder(time: string | null): Promise<ReminderResult
     if (Platform.OS === 'android') {
       await Notifications.setNotificationChannelAsync(CHANNEL_ID, {
         name: '기록 알림',
+        // expo-notifications가 `export *`로 내보내는 enum이라 import/namespace 규칙이 찾지 못합니다(오탐).
+        // eslint-disable-next-line import/namespace
         importance: Notifications.AndroidImportance.DEFAULT,
       });
     }

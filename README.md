@@ -21,6 +21,10 @@
 - 기록 알림 시간은 설정값만 저장합니다. 실제 자동 푸시와 앱 잠금은 제공하지 않습니다.
 - App Store/Play Store 네이티브 앱이 아닌 반응형 웹앱입니다. 구름 캐릭터와 노을 그림은 참고 디자인을 바탕으로 SVG/CSS로 재현했습니다.
 
+## 모바일 앱 (React Native)
+
+`mobile/` 폴더에 같은 기능을 하는 **Expo(React Native) 앱**이 있습니다. 실행 방법과 구조는 [mobile/README.md](mobile/README.md)를 보세요. 웹앱에서 내보낸 JSON 백업을 모바일 앱에서 불러올 수 있습니다.
+
 ## 소스 수정
 
 루트의 index.html, style.css, app.js를 수정한 후 dist/에 같은 파일을 복사합니다. dist/가 Sites 배포 대상입니다. 빌드 도구나 서버 의존성이 없습니다.

@@ -54,10 +54,10 @@ const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.background },
   content: { paddingHorizontal: 24, paddingBottom: 20 },
   logo: { marginVertical: 28 },
-  forgot: { alignSelf: 'flex-end', paddingVertical: 4 },
+  forgot: { alignSelf: 'flex-end', minHeight: 44, justifyContent: 'center' },
   forgotText: { fontSize: 13, color: colors.textSoft },
   note: { textAlign: 'center', fontSize: 12, lineHeight: 18, color: colors.textSoft, marginTop: 30 },
-  switch: { alignItems: 'center', marginTop: 28, paddingVertical: 8 },
+  switch: { alignItems: 'center', justifyContent: 'center', marginTop: 20, minHeight: 44 },
   switchText: { fontSize: 14, fontWeight: '800', color: colors.primary },
   footer: { paddingHorizontal: 24, paddingBottom: 16, paddingTop: 8 },
 });

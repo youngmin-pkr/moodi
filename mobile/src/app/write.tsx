@@ -33,7 +33,9 @@ export default function WriteScreen() {
 
   // 저장하지 않고 나가면, 이번에 새로 추가한 사진 파일만 지웁니다.
   const photosRef = useRef(photos);
-  photosRef.current = photos;
+  useEffect(() => {
+    photosRef.current = photos;
+  }, [photos]);
   const originalRef = useRef(editing?.photos ?? []);
   const savedRef = useRef(false);
   useEffect(

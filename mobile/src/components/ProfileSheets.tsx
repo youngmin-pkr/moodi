@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Pressable, StyleSheet, Switch, Text, TextInput, View } from 'react-native';
 import { Backdrop } from './Sheets';
 import { PrimaryButton } from './PrimaryButton';
@@ -9,13 +9,19 @@ import { formatTime, Hm, koreanTime, parseTime, stepTime } from '../lib/time';
 export const MAX_NAME_LENGTH = 12;
 
 export function NameSheet({ visible, value, onSave, onClose }: { visible: boolean; value: string; onSave: (name: string) => void; onClose: () => void }) {
-  const [name, setName] = useState(value);
-  useEffect(() => {
-    if (visible) setName(value);
-  }, [visible, value]);
-  const trimmed = name.trim();
+  // 모달 내용은 닫혀 있을 때 렌더되지 않으므로, 열 때마다 NameForm이 새로 만들어져 입력값이 value로 초기화됩니다.
   return (
     <Backdrop visible={visible} onClose={onClose} center>
+      <NameForm value={value} onSave={onSave} onClose={onClose} />
+    </Backdrop>
+  );
+}
+
+function NameForm({ value, onSave, onClose }: { value: string; onSave: (name: string) => void; onClose: () => void }) {
+  const [name, setName] = useState(value);
+  const trimmed = name.trim();
+  return (
+    <>
       <Text style={styles.heading}>프로필 수정</Text>
       <Text style={styles.label}>닉네임</Text>
       <TextInput
@@ -34,7 +40,7 @@ export function NameSheet({ visible, value, onSave, onClose }: { visible: boolea
         <PrimaryButton label="저장" disabled={!trimmed} onPress={() => onSave(trimmed)} />
         <PrimaryButton label="닫기" variant="secondary" onPress={onClose} />
       </View>
-    </Backdrop>
+    </>
   );
 }
 
@@ -54,17 +60,19 @@ function Stepper({ label, value, onUp, onDown }: { label: string; value: string;
 
 /** 알림 켜기/끄기와 시각 선택. time이 null이면 꺼진 상태입니다. */
 export function ReminderSheet({ visible, value, onSave, onClose }: { visible: boolean; value: string | null; onSave: (time: string | null) => void; onClose: () => void }) {
-  const [on, setOn] = useState(value !== null);
-  const [t, setT] = useState<Hm>(parseTime(value) ?? { hour: 21, minute: 0 });
-  useEffect(() => {
-    if (visible) {
-      setOn(value !== null);
-      setT(parseTime(value) ?? { hour: 21, minute: 0 });
-    }
-  }, [visible, value]);
-  const h12 = t.hour % 12 === 0 ? 12 : t.hour % 12;
   return (
     <Backdrop visible={visible} onClose={onClose}>
+      <ReminderForm value={value} onSave={onSave} onClose={onClose} />
+    </Backdrop>
+  );
+}
+
+function ReminderForm({ value, onSave, onClose }: { value: string | null; onSave: (time: string | null) => void; onClose: () => void }) {
+  const [on, setOn] = useState(value !== null);
+  const [t, setT] = useState<Hm>(parseTime(value) ?? { hour: 21, minute: 0 });
+  const h12 = t.hour % 12 === 0 ? 12 : t.hour % 12;
+  return (
+    <>
       <Text style={styles.heading}>기록 알림</Text>
       <View style={styles.switchRow}>
         <Text style={styles.switchText}>매일 알림 받기</Text>
@@ -88,7 +96,7 @@ export function ReminderSheet({ visible, value, onSave, onClose }: { visible: bo
         <PrimaryButton label="저장" onPress={() => onSave(on ? formatTime(t) : null)} />
         <PrimaryButton label="닫기" variant="secondary" onPress={onClose} />
       </View>
-    </Backdrop>
+    </>
   );
 }
 

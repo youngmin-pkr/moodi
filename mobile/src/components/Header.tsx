@@ -22,6 +22,6 @@ export function Header({ title, onBack }: { title?: string; onBack?: () => void 
 
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', minHeight: 48, paddingHorizontal: 16 },
-  back: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
+  back: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
   title: { marginLeft: 6, fontSize: 18, fontWeight: '700', color: colors.text },
 });
