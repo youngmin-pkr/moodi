@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
+import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Field, Wordmark } from '../components/Form';
 import { Header } from '../components/Header';
@@ -28,7 +29,7 @@ export default function Login() {
   return (
     <SafeAreaView style={styles.safe}>
       <Header title="로그인" onBack={() => (router.canGoBack() ? router.back() : router.replace('/welcome'))} />
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
         <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
           <View style={styles.logo}><Wordmark /></View>
           <Field label="이메일" value={email} onChangeText={setEmail} error={eErr} placeholder="이메일 주소를 입력해주세요" keyboardType="email-address" autoComplete="email" textContentType="emailAddress" />

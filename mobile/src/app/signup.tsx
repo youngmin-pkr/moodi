@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
+import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CheckRow, Field, Wordmark } from '../components/Form';
 import { Header } from '../components/Header';
@@ -35,7 +36,7 @@ export default function Signup() {
   return (
     <SafeAreaView style={styles.safe}>
       <Header title="회원가입" onBack={() => (router.canGoBack() ? router.back() : router.replace('/welcome'))} />
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
         <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
           <View style={styles.logo}><Wordmark /></View>
           <Field label="닉네임" value={nickname} onChangeText={setNickname} error={nErr} maxLength={MAX_NICKNAME_LENGTH} placeholder="어떻게 불러드릴까요?" autoComplete="nickname" />
