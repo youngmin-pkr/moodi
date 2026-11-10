@@ -3,6 +3,7 @@ import { sortRecords, queryRecords, validateDraft, createSampleRecords } from '.
 import { recordsInPeriod, countByEmotion, topEmotion, ratios, countByMonth, monthForEmotion, withJosa, distinctDays, weekDays } from '../stats';
 import { createBackup, parseBackup, mergeRecords, BackupError } from '../backup';
 import { parseTime, formatTime, koreanTime, stepTime } from '../time';
+import { emailError, passwordError, nicknameError } from '../validation';
 import { DiaryRecord } from '../../types';
 
 const rec = (id: string, date: string, emotion: number, extra: Partial<DiaryRecord> = {}): DiaryRecord => ({
@@ -160,5 +161,26 @@ describe('time', () => {
     expect(stepTime({ hour: 9, minute: 55 }, 'minute', 5)).toEqual({ hour: 9, minute: 0 });
     expect(stepTime({ hour: 9, minute: 0 }, 'minute', -5)).toEqual({ hour: 9, minute: 55 });
     expect(stepTime({ hour: 9, minute: 0 }, 'hour', 12)).toEqual({ hour: 21, minute: 0 });
+  });
+});
+
+describe('validation', () => {
+  it('checks email', () => {
+    expect(emailError('')).toBe('이메일을 입력해주세요.');
+    expect(emailError('   ')).toBe('이메일을 입력해주세요.');
+    expect(emailError('abc')).toBe('이메일 형식이 맞지 않아요.');
+    expect(emailError('a@b')).toBe('이메일 형식이 맞지 않아요.');
+    expect(emailError('a b@c.com')).toBe('이메일 형식이 맞지 않아요.');
+    expect(emailError(' user@example.com ')).toBeNull();
+  });
+  it('checks password length', () => {
+    expect(passwordError('')).toBe('비밀번호를 입력해주세요.');
+    expect(passwordError('1234567')).toContain('8자 이상');
+    expect(passwordError('12345678')).toBeNull();
+  });
+  it('checks nickname', () => {
+    expect(nicknameError('  ')).toBe('닉네임을 입력해주세요.');
+    expect(nicknameError('가'.repeat(13))).toContain('12자');
+    expect(nicknameError('무디')).toBeNull();
   });
 });

@@ -120,6 +120,7 @@ export default function Profile() {
         <Row icon="bell" label="기록 알림" value={koreanTime(profile.reminder)} onPress={() => setReminderSheet(true)} />
         <Row icon="lock" label="앱 잠금" value="준비 중" onPress={() => toast('앱 잠금은 아직 준비 중이에요.')} />
         <Row icon="record" label="나의 기록" value={`${records.length}개`} onPress={() => router.navigate('/records')} />
+        <Row icon="profile" label="계정 관리" value="체험 모드" onPress={() => router.push('/welcome')} />
 
         <Text style={styles.section}>데이터</Text>
         <Row icon="record" label="기록 백업하기" value="JSON 파일" onPress={doExport} />
