@@ -1,4 +1,5 @@
 import { DiaryRecord } from '../types';
+import { EMOTIONS, MAX_CUSTOM_EMOTION_LENGTH, OTHER_EMOTION } from '../constants/emotions';
 import { today, shiftDate } from './date';
 
 export const MAX_BODY_LENGTH = 2000;
@@ -28,8 +29,20 @@ export function queryRecords(records: readonly DiaryRecord[], q: RecordQuery): D
     (r) =>
       r.date.startsWith(q.month) &&
       (q.emotion < 0 || r.emotion === q.emotion) &&
-      (!needle || `${r.title} ${r.body}`.toLowerCase().includes(needle)),
+      (!needle || `${r.title} ${r.body} ${r.customEmotion ?? ''}`.toLowerCase().includes(needle)),
   );
+}
+
+/** 화면에 보여 줄 감정 이름. '기타'이고 직접 적은 이름이 있으면 그 이름을 씁니다. */
+export function emotionLabel(r: Pick<DiaryRecord, 'emotion' | 'customEmotion'>): string {
+  return r.emotion === OTHER_EMOTION && r.customEmotion ? r.customEmotion : EMOTIONS[r.emotion].name;
+}
+
+/** 직접 적은 감정 이름을 정리합니다. '기타'가 아니거나 비어 있으면 undefined. */
+export function normalizeCustomEmotion(emotion: number, text: string): string | undefined {
+  if (emotion !== OTHER_EMOTION) return undefined;
+  const v = text.trim().replace(/\s+/g, ' ').slice(0, MAX_CUSTOM_EMOTION_LENGTH);
+  return v || undefined;
 }
 
 export type DraftError = 'emotion' | 'content' | 'tooLong';

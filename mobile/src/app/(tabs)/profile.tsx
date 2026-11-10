@@ -5,14 +5,14 @@ import Constants from 'expo-constants';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Icon, IconName } from '../../components/Icon';
 import { Mascot } from '../../components/Mascot';
-import { NameSheet, ReminderSheet } from '../../components/ProfileSheets';
+import { NameSheet } from '../../components/ProfileSheets';
+import { ReminderSheetHost } from '../../components/ReminderSheetHost';
 import { ConfirmDialog } from '../../components/Sheets';
 import { useToast } from '../../components/Toast';
 import { colors } from '../../constants/theme';
 import { BackupError, mergeRecords } from '../../lib/backup';
 import { exportBackup, materializePhotos, pickBackup, PickedBackup } from '../../lib/backupIO';
 import { deletePhotos } from '../../lib/photos';
-import { applyReminder } from '../../lib/reminder';
 import { koreanTime } from '../../lib/time';
 import { useRecords } from '../../state/RecordsContext';
 
@@ -40,17 +40,6 @@ export default function Profile() {
   const saveName = async (name: string) => {
     setNameSheet(false);
     toast((await updateProfile({ name })) ? '프로필을 저장했어요' : '저장하지 못했어요. 다시 시도해주세요.');
-  };
-
-  const saveReminder = async (time: string | null) => {
-    setReminderSheet(false);
-    const res = await applyReminder(time);
-    if (!res.ok) {
-      if (res.reason === 'denied') return toast('알림 권한이 꺼져 있어요. 휴대폰 설정에서 허용해주세요.');
-      if (res.reason === 'unsupported') return toast('이 환경에서는 알림을 쓸 수 없어요. 휴대폰 앱에서 설정해주세요.');
-      return toast('알림을 설정하지 못했어요. 다시 시도해주세요.');
-    }
-    if (await updateProfile({ reminder: time })) toast(time ? `매일 ${koreanTime(time)}에 알려드릴게요` : '기록 알림을 껐어요');
   };
 
   const doExport = async () => {
@@ -136,7 +125,7 @@ export default function Profile() {
       </ScrollView>
 
       <NameSheet visible={nameSheet} value={profile.name} onSave={saveName} onClose={() => setNameSheet(false)} />
-      <ReminderSheet visible={reminderSheet} value={profile.reminder} onSave={saveReminder} onClose={() => setReminderSheet(false)} />
+      <ReminderSheetHost visible={reminderSheet} onClose={() => setReminderSheet(false)} />
       <ConfirmDialog
         visible={pending !== null}
         tone="primary"

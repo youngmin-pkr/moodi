@@ -4,6 +4,8 @@ export type DiaryRecord = {
   date: string;
   /** EMOTIONS 배열의 인덱스 */
   emotion: number;
+  /** 감정이 '기타'일 때 사용자가 직접 적은 감정 이름 (없으면 '기타'로 표시) */
+  customEmotion?: string;
   title: string;
   body: string;
   /** 사진 주소. 앱에서는 파일 URI, 웹 백업에서는 data URI일 수 있습니다. */

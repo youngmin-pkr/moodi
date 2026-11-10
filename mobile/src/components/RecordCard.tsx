@@ -5,6 +5,7 @@ import { Mascot } from './Mascot';
 import { EMOTIONS } from '../constants/emotions';
 import { colors } from '../constants/theme';
 import { dateText } from '../lib/date';
+import { emotionLabel } from '../lib/records';
 import { DiaryRecord } from '../types';
 
 export function openRecord(id: string) {
@@ -13,10 +14,11 @@ export function openRecord(id: string) {
 
 export function RecordCard({ record, featured }: { record: DiaryRecord; featured?: boolean }) {
   const e = EMOTIONS[record.emotion];
+  const label = emotionLabel(record);
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={`${dateText(record.date, false)} ${e.name} ${record.title}`}
+      accessibilityLabel={`${dateText(record.date, false)} ${label} ${record.title}`}
       onPress={() => openRecord(record.id)}
       style={[styles.card, featured && styles.featured]}
     >
@@ -24,9 +26,9 @@ export function RecordCard({ record, featured }: { record: DiaryRecord; featured
       <View style={styles.copy}>
         <View style={styles.meta}>
           <Text style={styles.date}>{dateText(record.date, false)}</Text>
-          {featured && (
+          {(featured || record.customEmotion) && (
             <View style={[styles.tag, { backgroundColor: e.soft }]}>
-              <Text style={styles.tagText}>{e.name}</Text>
+              <Text style={styles.tagText} numberOfLines={1}>{label}</Text>
             </View>
           )}
         </View>

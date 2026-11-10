@@ -7,6 +7,10 @@ export type Emotion = {
   hint: string;
 };
 
+/** '기타' 감정의 인덱스. 이 감정만 이름을 직접 적을 수 있습니다. */
+export const OTHER_EMOTION = 8;
+export const MAX_CUSTOM_EMOTION_LENGTH = 8;
+
 // 웹앱(app.js)의 감정 9종과 순서·색을 그대로 유지합니다. 순서를 바꾸면 기존 기록이 달라집니다.
 export const EMOTIONS: readonly Emotion[] = [
   { name: '행복', color: '#ffdc7d', soft: '#fff5d9', title: '행복한 하루', hint: '오늘의 작은 행복을 남겨요.' },

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -5,14 +6,17 @@ import { EmptyState } from '../../components/EmptyState';
 import { Icon } from '../../components/Icon';
 import { Mascot } from '../../components/Mascot';
 import { RecordCard } from '../../components/RecordCard';
+import { ReminderSheetHost } from '../../components/ReminderSheetHost';
 import { WeekStrip } from '../../components/WeekStrip';
 import { colors } from '../../constants/theme';
 import { dateText, today } from '../../lib/date';
+import { koreanTime } from '../../lib/time';
 import { sortRecords } from '../../lib/records';
 import { useRecords } from '../../state/RecordsContext';
 
 export default function Home() {
-  const { records, ready } = useRecords();
+  const { records, ready, profile } = useRecords();
+  const [reminderOpen, setReminderOpen] = useState(false);
   const latest = sortRecords(records)[0];
   const hasSample = records.some((r) => r.sample);
 
@@ -28,8 +32,9 @@ export default function Home() {
             <Pressable accessibilityRole="button" accessibilityLabel="프로필" onPress={() => router.navigate('/profile')} style={styles.hit}>
               <Icon name="profile" color={colors.primary} />
             </Pressable>
-            <Pressable accessibilityRole="button" accessibilityLabel="기록 알림" onPress={() => router.navigate('/profile')} style={styles.hit}>
+            <Pressable accessibilityRole="button" accessibilityLabel={`기록 알림 ${koreanTime(profile.reminder)}`} onPress={() => setReminderOpen(true)} style={styles.hit}>
               <Icon name="bell" color={colors.primary} />
+              {profile.reminder !== null && <View style={styles.bellDot} />}
             </Pressable>
           </View>
         </View>
@@ -64,6 +69,7 @@ export default function Home() {
         {latest ? <RecordCard record={latest} featured /> : ready ? <EmptyState message={'아직 남겨진 마음이 없어요.\n오늘의 첫 마음을 기록해볼까요?'} /> : null}
         {hasSample && <Text style={styles.note}>미리 채워둔 예시 기록입니다 · 내 기록을 추가해보세요</Text>}
       </ScrollView>
+      <ReminderSheetHost visible={reminderOpen} onClose={() => setReminderOpen(false)} />
     </SafeAreaView>
   );
 }
@@ -73,6 +79,7 @@ const styles = StyleSheet.create({
   content: { paddingHorizontal: 20, paddingBottom: 28 },
   top: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 8 },
   brand: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  bellDot: { position: 'absolute', top: 9, right: 10, width: 8, height: 8, borderRadius: 4, backgroundColor: '#e0679a', borderWidth: 1.5, borderColor: colors.background },
   brandText: { fontSize: 22, fontWeight: '900', color: colors.primary, letterSpacing: 1.5 },
   icons: { flexDirection: 'row', marginRight: -10 },
   hit: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },

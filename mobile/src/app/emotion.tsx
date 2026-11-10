@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Header } from '../components/Header';
 import { Mascot } from '../components/Mascot';
 import { PrimaryButton } from '../components/PrimaryButton';
-import { EMOTIONS } from '../constants/emotions';
+import { EMOTIONS, OTHER_EMOTION } from '../constants/emotions';
 import { colors } from '../constants/theme';
 
 export default function EmotionScreen() {
@@ -47,6 +47,7 @@ export default function EmotionScreen() {
           onPress={() => router.push({ pathname: '/write', params: { emotion: String(selected), ...(date ? { date } : {}) } })}
         />
         {selected === null && <Text style={styles.hint}>감정을 선택하면 다음으로 넘어갈 수 있어요.</Text>}
+        {selected === OTHER_EMOTION && <Text style={styles.hint}>다음 화면에서 감정 이름을 직접 적을 수 있어요.</Text>}
       </View>
     </SafeAreaView>
   );

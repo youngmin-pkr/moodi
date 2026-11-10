@@ -1,5 +1,5 @@
 import { Backup, DiaryRecord, Profile } from '../types';
-import { EMOTIONS } from '../constants/emotions';
+import { EMOTIONS, MAX_CUSTOM_EMOTION_LENGTH, OTHER_EMOTION } from '../constants/emotions';
 import { isValidDateString } from './date';
 
 export function createBackup(records: readonly DiaryRecord[], profile: Profile, now = new Date()): Backup {
@@ -22,6 +22,10 @@ function sanitizeRecord(raw: unknown): DiaryRecord | null {
   const photos = Array.isArray(r.photos) ? r.photos.filter((p): p is string => typeof p === 'string').slice(0, 3) : [];
   const rec: DiaryRecord = { id: String(r.id), date: r.date, emotion: r.emotion as number, title: r.title, body: r.body, photos };
   if (r.sample === true) rec.sample = true;
+  if (rec.emotion === OTHER_EMOTION && typeof r.customEmotion === 'string') {
+    const custom = r.customEmotion.trim().slice(0, MAX_CUSTOM_EMOTION_LENGTH);
+    if (custom) rec.customEmotion = custom;
+  }
   return rec;
 }
 

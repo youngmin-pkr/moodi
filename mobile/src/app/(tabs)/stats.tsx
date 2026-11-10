@@ -9,7 +9,7 @@ import { RecordCard, openRecord } from '../../components/RecordCard';
 import { EMOTIONS } from '../../constants/emotions';
 import { colors } from '../../constants/theme';
 import { monthDay, parseDate, shiftDate, shiftMonthClamped, today } from '../../lib/date';
-import { sortRecords } from '../../lib/records';
+import { emotionLabel, sortRecords } from '../../lib/records';
 import { countByEmotion, countByMonth, distinctDays, monthForEmotion, ratios, recordsInPeriod, topEmotion, weekDays, withJosa } from '../../lib/stats';
 import { useRecords } from '../../state/RecordsContext';
 import { StatPeriod } from '../../types';
@@ -100,14 +100,14 @@ export default function Stats() {
                 <Pressable
                   key={date}
                   accessibilityRole="button"
-                  accessibilityLabel={record ? `${monthDay(date)} ${EMOTIONS[record.emotion].name}` : `${monthDay(date)} 기록 없음`}
+                  accessibilityLabel={record ? `${monthDay(date)} ${emotionLabel(record)}` : `${monthDay(date)} 기록 없음`}
                   disabled={!record}
                   onPress={() => record && openRecord(record.id)}
                   style={styles.weekDay}
                 >
                   <Text style={styles.weekLabel}>{WEEKDAY[parseDate(date).getDay()]}</Text>
                   <Mascot emotion={record ? record.emotion : 8} size={36} />
-                  <Text style={[styles.weekEmotion, !record && { color: '#cfc7dd' }]}>{record ? EMOTIONS[record.emotion].name : '-'}</Text>
+                  <Text style={[styles.weekEmotion, !record && { color: '#cfc7dd' }]} numberOfLines={1}>{record ? emotionLabel(record) : '-'}</Text>
                 </Pressable>
               ))}
             </View>

@@ -1,5 +1,5 @@
 import { shiftDate, shiftMonth, dateText, isValidDateString, monthDay, shiftMonthClamped } from '../date';
-import { sortRecords, queryRecords, validateDraft, createSampleRecords } from '../records';
+import { sortRecords, queryRecords, validateDraft, createSampleRecords, emotionLabel, normalizeCustomEmotion } from '../records';
 import { recordsInPeriod, countByEmotion, topEmotion, ratios, countByMonth, monthForEmotion, withJosa, distinctDays, weekDays } from '../stats';
 import { createBackup, parseBackup, mergeRecords, BackupError } from '../backup';
 import { parseTime, formatTime, koreanTime, stepTime } from '../time';
@@ -182,5 +182,30 @@ describe('validation', () => {
     expect(nicknameError('  ')).toBe('닉네임을 입력해주세요.');
     expect(nicknameError('가'.repeat(13))).toContain('12자');
     expect(nicknameError('무디')).toBeNull();
+  });
+});
+
+describe('custom emotion (기타)', () => {
+  it('labels with the custom name only for 기타', () => {
+    expect(emotionLabel({ emotion: 8, customEmotion: '뿌듯함' })).toBe('뿌듯함');
+    expect(emotionLabel({ emotion: 8 })).toBe('기타');
+    expect(emotionLabel({ emotion: 0, customEmotion: '무시됨' })).toBe('행복');
+  });
+  it('normalizes the typed name', () => {
+    expect(normalizeCustomEmotion(8, '  뿌듯함  ')).toBe('뿌듯함');
+    expect(normalizeCustomEmotion(8, '   ')).toBeUndefined();
+    expect(normalizeCustomEmotion(8, '가  나   다')).toBe('가 나 다');
+    expect(normalizeCustomEmotion(8, '1234567890')).toBe('12345678');
+    expect(normalizeCustomEmotion(3, '뿌듯함')).toBeUndefined();
+  });
+  it('searches the custom name', () => {
+    const rs = [rec('1', '2026-10-01', 8, { customEmotion: '뿌듯함' }), rec('2', '2026-10-02', 8)];
+    expect(queryRecords(rs, { month: '2026-10', emotion: -1, search: '뿌듯' }).map((r) => r.id)).toEqual(['1']);
+  });
+  it('keeps the custom name through a backup and ignores it on other emotions', () => {
+    const rs = [rec('1', '2026-10-01', 8, { customEmotion: '  뿌듯함  ' }), rec('2', '2026-10-02', 0, { customEmotion: '무시' })];
+    const parsed = parseBackup(JSON.stringify(createBackup(rs, { name: '무디', reminder: null })));
+    expect(parsed.records[0].customEmotion).toBe('뿌듯함');
+    expect(parsed.records[1].customEmotion).toBeUndefined();
   });
 });

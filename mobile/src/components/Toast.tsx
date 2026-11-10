@@ -11,7 +11,8 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   const show = useCallback((m: string) => {
     setMsg(m);
     clearTimeout(timer.current);
-    timer.current = setTimeout(() => setMsg(null), 2800);
+    // 긴 안내는 읽을 시간이 더 필요합니다.
+    timer.current = setTimeout(() => setMsg(null), Math.min(7000, 2800 + Math.max(0, m.length - 24) * 70));
   }, []);
   return (
     <ToastContext.Provider value={show}>

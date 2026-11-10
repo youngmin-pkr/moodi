@@ -9,10 +9,10 @@ import { Mascot } from '../components/Mascot';
 import { PhotoSheet } from '../components/Sheets';
 import { PrimaryButton } from '../components/PrimaryButton';
 import { useToast } from '../components/Toast';
-import { EMOTIONS } from '../constants/emotions';
+import { EMOTIONS, MAX_CUSTOM_EMOTION_LENGTH, OTHER_EMOTION } from '../constants/emotions';
 import { colors } from '../constants/theme';
 import { dateText, today } from '../lib/date';
-import { MAX_BODY_LENGTH, MAX_PHOTOS, validateDraft } from '../lib/records';
+import { MAX_BODY_LENGTH, MAX_PHOTOS, normalizeCustomEmotion, validateDraft } from '../lib/records';
 import { deletePhotos, pickFromLibrary, takePhoto } from '../lib/photos';
 import { useRecords } from '../state/RecordsContext';
 
@@ -27,6 +27,7 @@ export default function WriteScreen() {
   const date = editing?.date ?? params.date ?? today();
   const [title, setTitle] = useState(editing?.title ?? '');
   const [body, setBody] = useState(editing?.body ?? '');
+  const [custom, setCustom] = useState(editing?.customEmotion ?? '');
   const [photos, setPhotos] = useState<string[]>(editing?.photos ?? []);
   const [sheet, setSheet] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -75,7 +76,7 @@ export default function WriteScreen() {
     if (err === 'content') return toast('내용을 입력해주세요');
     if (err === 'tooLong') return toast(`내용은 ${MAX_BODY_LENGTH.toLocaleString()}자까지 쓸 수 있어요.`);
     setSaving(true);
-    const data = { date, emotion, title: title.trim(), body: body.trim(), photos };
+    const data = { date, emotion, title: title.trim(), body: body.trim(), photos, customEmotion: normalizeCustomEmotion(emotion, custom) };
     if (editing) {
       const ok = await updateRecord(editing.id, data);
       setSaving(false);
@@ -109,6 +110,22 @@ export default function WriteScreen() {
             </View>
           </View>
 
+          {emotion === OTHER_EMOTION && (
+            <View style={styles.customBox}>
+              <Text style={styles.customLabel}>어떤 감정인가요? (선택)</Text>
+              <TextInput
+                value={custom}
+                onChangeText={setCustom}
+                placeholder="예: 뿌듯함, 아쉬움, 외로움"
+                placeholderTextColor="#b3abc4"
+                maxLength={MAX_CUSTOM_EMOTION_LENGTH}
+                accessibilityLabel="감정 이름"
+                returnKeyType="next"
+                style={styles.customInput}
+              />
+              <Text style={styles.customHint}>{`적지 않으면 '기타'로 보여요. (${custom.length}/${MAX_CUSTOM_EMOTION_LENGTH})`}</Text>
+            </View>
+          )}
           <TextInput
             value={title}
             onChangeText={setTitle}
@@ -180,6 +197,10 @@ const styles = StyleSheet.create({
   top: { flexDirection: 'row', alignItems: 'center', gap: 12, marginVertical: 10 },
   heading: { fontSize: 22, fontWeight: '800', color: colors.text },
   hint: { fontSize: 13, color: colors.textSoft, marginTop: 4 },
+  customBox: { marginBottom: 12 },
+  customLabel: { fontSize: 13, fontWeight: '800', color: colors.text, marginBottom: 6 },
+  customInput: { backgroundColor: '#f4ebfa', borderRadius: 16, padding: 14, fontSize: 16, color: colors.text, borderWidth: 1, borderColor: colors.border },
+  customHint: { fontSize: 12, color: colors.textSoft, marginTop: 5 },
   titleInput: { backgroundColor: colors.surface, borderRadius: 16, padding: 16, fontSize: 17, fontWeight: '700', color: colors.text, borderWidth: 1, borderColor: colors.border },
   bodyInput: { marginTop: 12, backgroundColor: colors.surface, borderRadius: 16, padding: 16, fontSize: 16, lineHeight: 24, minHeight: 180, color: colors.text, borderWidth: 1, borderColor: colors.border },
   count: { alignSelf: 'flex-end', marginTop: 6, fontSize: 12, color: colors.textSoft },

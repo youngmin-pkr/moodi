@@ -10,6 +10,7 @@ import { useToast } from '../../components/Toast';
 import { EMOTIONS } from '../../constants/emotions';
 import { colors } from '../../constants/theme';
 import { dateText } from '../../lib/date';
+import { emotionLabel } from '../../lib/records';
 import { useRecords } from '../../state/RecordsContext';
 
 export default function RecordDetail() {
@@ -47,6 +48,9 @@ export default function RecordDetail() {
           <View style={{ flex: 1 }}>
             <Text style={styles.date}>{dateText(rec.date)}</Text>
             <Text style={styles.emotion}>{e.title}</Text>
+            <View style={styles.tag}>
+              <Text style={styles.tagText}>{emotionLabel(rec)}</Text>
+            </View>
           </View>
         </View>
         <Text style={styles.title}>{rec.title}</Text>
@@ -76,6 +80,8 @@ const styles = StyleSheet.create({
   content: { paddingHorizontal: 24, paddingBottom: 24 },
   banner: { flexDirection: 'row', alignItems: 'center', gap: 12, borderRadius: 22, padding: 16 },
   date: { fontSize: 13, color: colors.textSoft, fontWeight: '600' },
+  tag: { alignSelf: 'flex-start', backgroundColor: 'rgba(255,255,255,0.75)', borderRadius: 12, paddingHorizontal: 10, paddingVertical: 3, marginTop: 8 },
+  tagText: { fontSize: 12, fontWeight: '700', color: colors.text },
   emotion: { fontSize: 20, fontWeight: '800', color: colors.text, marginTop: 4 },
   title: { fontSize: 22, fontWeight: '800', color: colors.text, marginTop: 20 },
   body: { fontSize: 16, lineHeight: 26, color: colors.text, marginTop: 12 },
