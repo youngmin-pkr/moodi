@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { ComfortCard } from '../../components/ComfortCard';
 import { Header } from '../../components/Header';
 import { Icon } from '../../components/Icon';
 import { Mascot } from '../../components/Mascot';
@@ -15,7 +16,7 @@ import { useRecords } from '../../state/RecordsContext';
 
 export default function RecordDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { records, removeRecord } = useRecords();
+  const { records, removeRecord, profile } = useRecords();
   const toast = useToast();
   const [confirm, setConfirm] = useState(false);
   const rec = records.find((r) => r.id === id);
@@ -58,6 +59,11 @@ export default function RecordDetail() {
         {rec.photos.map((uri) => (
           <Image key={uri} source={{ uri }} style={styles.photo} resizeMode="cover" accessibilityLabel="첨부한 사진" />
         ))}
+        {profile.companion && (
+          <View style={{ marginTop: 22 }}>
+            <ComfortCard record={rec} chat />
+          </View>
+        )}
       </ScrollView>
       <View style={styles.footer}>
         <Pressable accessibilityRole="button" onPress={() => router.push({ pathname: '/write', params: { id: rec.id } })} style={[styles.action, styles.edit]}>

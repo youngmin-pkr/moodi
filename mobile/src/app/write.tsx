@@ -12,14 +12,15 @@ import { useToast } from '../components/Toast';
 import { EMOTIONS, MAX_CUSTOM_EMOTION_LENGTH, OTHER_EMOTION } from '../constants/emotions';
 import { colors } from '../constants/theme';
 import { dateText, today } from '../lib/date';
-import { MAX_BODY_LENGTH, MAX_PHOTOS, normalizeCustomEmotion, validateDraft } from '../lib/records';
+import { companion } from '../lib/companion';
+import { MAX_BODY_LENGTH, MAX_PHOTOS, newRecordId, normalizeCustomEmotion, validateDraft } from '../lib/records';
 import { deletePhotos, pickFromLibrary, takePhoto } from '../lib/photos';
 import { useRecords } from '../state/RecordsContext';
 
 /** 새 기록(emotion, date)과 수정(id)을 모두 처리합니다. */
 export default function WriteScreen() {
   const params = useLocalSearchParams<{ emotion?: string; date?: string; id?: string }>();
-  const { records, addRecord, updateRecord } = useRecords();
+  const { records, addRecord, updateRecord, profile } = useRecords();
   const toast = useToast();
   const editing = params.id ? records.find((r) => r.id === params.id) : undefined;
 
@@ -85,7 +86,10 @@ export default function WriteScreen() {
       toast('수정했어요');
       router.back();
     } else {
-      const rec = await addRecord(data);
+      // 구름의 한마디를 함께 저장합니다. (기능을 껐으면 만들지 않습니다)
+      const id = newRecordId();
+      const comfort = profile.companion ? (await companion.comfort({ id, emotion, title: data.title, body: data.body })).text : undefined;
+      const rec = await addRecord({ ...data, id, comfort });
       setSaving(false);
       if (!rec) return toast('저장 공간이 부족해요. 사진을 줄여 다시 시도해주세요.');
       savedRef.current = true;

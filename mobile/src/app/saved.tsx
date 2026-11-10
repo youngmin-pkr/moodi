@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { ComfortCard } from '../components/ComfortCard';
 import { Mascot } from '../components/Mascot';
 import { PrimaryButton } from '../components/PrimaryButton';
 import { colors } from '../constants/theme';
@@ -8,7 +9,7 @@ import { useRecords } from '../state/RecordsContext';
 
 export default function SavedScreen() {
   const { id } = useLocalSearchParams<{ id?: string }>();
-  const { records } = useRecords();
+  const { records, profile } = useRecords();
   const rec = records.find((r) => r.id === id);
   return (
     <SafeAreaView style={styles.safe}>
@@ -17,6 +18,11 @@ export default function SavedScreen() {
         <Text style={styles.title}>기록이 저장되었어요!</Text>
         <Text style={styles.msg}>오늘의 감정이{'\n'}소중히 기록 되었어요!</Text>
         <Text style={styles.thanks}>좋은 하루를 만들어주셔서 감사해요!</Text>
+        {rec && profile.companion && (
+          <View style={styles.comfort}>
+            <ComfortCard record={rec} />
+          </View>
+        )}
       </View>
       <View style={styles.footer}>
         {rec && <PrimaryButton label="기록 보기" onPress={() => router.replace({ pathname: '/record/[id]', params: { id: rec.id } })} />}
@@ -31,6 +37,7 @@ const styles = StyleSheet.create({
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 24 },
   title: { fontSize: 24, fontWeight: '800', color: colors.text, marginTop: 16 },
   msg: { fontSize: 16, color: colors.text, textAlign: 'center', lineHeight: 24, marginTop: 10 },
+  comfort: { alignSelf: 'stretch', marginTop: 22 },
   thanks: { fontSize: 13, color: colors.textSoft, marginTop: 14 },
   footer: { paddingHorizontal: 24, paddingBottom: 16, gap: 10 },
 });

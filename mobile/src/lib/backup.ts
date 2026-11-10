@@ -1,4 +1,4 @@
-import { Backup, DiaryRecord, Profile } from '../types';
+import { Backup, ChatMessage, DiaryRecord, Profile } from '../types';
 import { EMOTIONS, MAX_CUSTOM_EMOTION_LENGTH, OTHER_EMOTION } from '../constants/emotions';
 import { isValidDateString } from './date';
 
@@ -12,6 +12,19 @@ export function backupFileName(date: string): string {
 
 export class BackupError extends Error {}
 
+const MAX_COMFORT_LENGTH = 500;
+const MAX_CHAT_MESSAGES = 80;
+const MAX_CHAT_TEXT = 1000;
+
+function sanitizeMessage(raw: unknown): ChatMessage | null {
+  if (!raw || typeof raw !== 'object') return null;
+  const m = raw as Record<string, unknown>;
+  if ((m.role !== 'user' && m.role !== 'companion') || typeof m.text !== 'string' || !m.text.trim()) return null;
+  const msg: ChatMessage = { role: m.role, text: m.text.slice(0, MAX_CHAT_TEXT) };
+  if (m.crisis === true && m.role === 'companion') msg.crisis = true;
+  return msg;
+}
+
 function sanitizeRecord(raw: unknown): DiaryRecord | null {
   if (!raw || typeof raw !== 'object') return null;
   const r = raw as Record<string, unknown>;
@@ -22,6 +35,11 @@ function sanitizeRecord(raw: unknown): DiaryRecord | null {
   const photos = Array.isArray(r.photos) ? r.photos.filter((p): p is string => typeof p === 'string').slice(0, 3) : [];
   const rec: DiaryRecord = { id: String(r.id), date: r.date, emotion: r.emotion as number, title: r.title, body: r.body, photos };
   if (r.sample === true) rec.sample = true;
+  if (typeof r.comfort === 'string' && r.comfort.trim()) rec.comfort = r.comfort.slice(0, MAX_COMFORT_LENGTH);
+  if (Array.isArray(r.chat)) {
+    const chat = r.chat.map(sanitizeMessage).filter((m): m is ChatMessage => m !== null).slice(0, MAX_CHAT_MESSAGES);
+    if (chat.length) rec.chat = chat;
+  }
   if (rec.emotion === OTHER_EMOTION && typeof r.customEmotion === 'string') {
     const custom = r.customEmotion.trim().slice(0, MAX_CUSTOM_EMOTION_LENGTH);
     if (custom) rec.customEmotion = custom;
@@ -45,7 +63,11 @@ export function parseBackup(text: string): { records: DiaryRecord[]; profile: Pr
   const p = (data as Backup).profile as Partial<Profile> | undefined;
   const profile: Profile | null =
     p && typeof p.name === 'string'
-      ? { name: p.name.slice(0, 12) || '무디', reminder: typeof p.reminder === 'string' && /^\d{2}:\d{2}$/.test(p.reminder) ? p.reminder : null }
+      ? {
+          name: p.name.slice(0, 12) || '무디',
+          reminder: typeof p.reminder === 'string' && /^\d{2}:\d{2}$/.test(p.reminder) ? p.reminder : null,
+          companion: typeof p.companion === 'boolean' ? p.companion : true,
+        }
       : null;
   return { records, profile, skipped: rawRecords.length - records.length };
 }

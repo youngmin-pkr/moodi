@@ -18,6 +18,7 @@ const PATHS = {
   edit: 'm4 16 12-12 4 4L8 20H4Zm10-10 4 4',
   trash: 'M4 6h16M9 3h6M7 6l1 15h8l1-15M10 10v7m4-7v7',
   close: 'M6 6l12 12M18 6 6 18',
+  chat: 'M4 4h16v12H9l-5 4Z',
 } as const;
 
 export type IconName = keyof typeof PATHS;

@@ -6,7 +6,7 @@ import { createSampleRecords } from './records';
 const RECORDS_KEY = 'moodi.records';
 const PROFILE_KEY = 'moodi.profile';
 
-export const DEFAULT_PROFILE: Profile = { name: '무디', reminder: null };
+export const DEFAULT_PROFILE: Profile = { name: '무디', reminder: null, companion: true };
 
 async function readJson<T>(key: string): Promise<T | null> {
   try {

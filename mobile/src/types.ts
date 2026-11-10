@@ -1,3 +1,10 @@
+export type ChatMessage = {
+  role: 'user' | 'companion';
+  text: string;
+  /** 위기 신호에 대한 도움 안내 메시지 (화면에서 다르게 보여 줍니다) */
+  crisis?: boolean;
+};
+
 export type DiaryRecord = {
   id: string;
   /** 'YYYY-MM-DD' (기기의 현지 날짜) */
@@ -12,12 +19,18 @@ export type DiaryRecord = {
   photos: string[];
   /** 첫 실행 때 보여주는 예시 기록 */
   sample?: boolean;
+  /** 기록을 저장할 때 구름이 남긴 한마디 */
+  comfort?: string;
+  /** 이 기록에 대해 구름과 나눈 대화 */
+  chat?: ChatMessage[];
 };
 
 export type Profile = {
   name: string;
   /** 'HH:mm' 또는 알림을 끈 경우 null */
   reminder: string | null;
+  /** 구름의 한마디·대화 기능 사용 여부 (기본 켜짐) */
+  companion: boolean;
 };
 
 export type StatPeriod = 'week' | 'month' | 'year';

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import Constants from 'expo-constants';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -24,6 +24,19 @@ function Row({ icon, label, value, onPress }: { icon: IconName; label: string; v
       {value ? <Text style={styles.rowValue}>{value}</Text> : null}
       <Icon name="next" size={16} color={colors.textSoft} />
     </Pressable>
+  );
+}
+
+function ToggleRow({ icon, label, hint, value, onChange }: { icon: IconName; label: string; hint: string; value: boolean; onChange: (v: boolean) => void }) {
+  return (
+    <View style={[styles.row, { alignItems: 'flex-start' }]}>
+      <Icon name={icon} size={22} color={colors.primary} />
+      <View style={{ flex: 1 }}>
+        <Text style={styles.rowLabel}>{label}</Text>
+        <Text style={styles.rowHint}>{hint}</Text>
+      </View>
+      <Switch value={value} onValueChange={onChange} trackColor={{ true: colors.primary, false: '#d9d2ea' }} accessibilityLabel={label} />
+    </View>
   );
 }
 
@@ -107,6 +120,15 @@ export default function Profile() {
 
         <Text style={styles.section}>기록 설정</Text>
         <Row icon="bell" label="기록 알림" value={koreanTime(profile.reminder)} onPress={() => setReminderSheet(true)} />
+        <ToggleRow
+          icon="chat"
+          label="구름의 한마디·대화"
+          hint="기록에 구름이 한마디를 남기고, 이야기할 수 있어요. 지금은 기기 안에서 만든 미리 준비된 답변이라 일기 내용이 밖으로 나가지 않아요."
+          value={profile.companion}
+          onChange={async (v) => {
+            if (!(await updateProfile({ companion: v }))) toast('저장하지 못했어요. 다시 시도해주세요.');
+          }}
+        />
         <Row icon="lock" label="앱 잠금" value="준비 중" onPress={() => toast('앱 잠금은 아직 준비 중이에요.')} />
         <Row icon="record" label="나의 기록" value={`${records.length}개`} onPress={() => router.navigate('/records')} />
         <Row icon="profile" label="계정 관리" value="체험 모드" onPress={() => router.push('/welcome')} />
@@ -159,6 +181,7 @@ const styles = StyleSheet.create({
   section: { fontSize: 14, fontWeight: '700', color: colors.textSoft, marginTop: 26, marginBottom: 10 },
   row: { flexDirection: 'row', alignItems: 'center', gap: 14, backgroundColor: colors.surface, borderRadius: 18, paddingHorizontal: 18, paddingVertical: 18, marginBottom: 10, borderWidth: 1, borderColor: colors.border },
   rowLabel: { flex: 1, fontSize: 16, color: colors.text },
+  rowHint: { fontSize: 12, lineHeight: 18, color: colors.textSoft, marginTop: 4 },
   rowValue: { fontSize: 13, color: colors.textSoft },
   textBtn: { alignItems: 'center', justifyContent: 'center', minHeight: 44 },
   textBtnLabel: { fontSize: 14, fontWeight: '700', color: colors.danger },

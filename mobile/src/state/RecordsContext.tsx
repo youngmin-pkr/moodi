@@ -1,10 +1,10 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { DiaryRecord, Profile } from '../types';
+import { ChatMessage, DiaryRecord, Profile } from '../types';
 import { DEFAULT_PROFILE, loadProfile, loadRecords, saveProfile, saveRecords } from '../lib/storage';
 import { deletePhotos } from '../lib/photos';
 import { newRecordId } from '../lib/records';
 
-type NewRecord = Omit<DiaryRecord, 'id' | 'sample'>;
+type NewRecord = Omit<DiaryRecord, 'id' | 'sample'> & { id?: string };
 
 type Ctx = {
   ready: boolean;
@@ -14,6 +14,8 @@ type Ctx = {
   addRecord: (r: NewRecord) => Promise<DiaryRecord | null>;
   updateRecord: (id: string, r: NewRecord) => Promise<boolean>;
   removeRecord: (id: string) => Promise<boolean>;
+  /** 기록에 달린 구름과의 대화를 저장합니다. 비어 있으면 대화를 지웁니다. */
+  setChat: (id: string, chat: ChatMessage[]) => Promise<boolean>;
   updateProfile: (p: Partial<Profile>) => Promise<boolean>;
   /** 백업 복원 등으로 기록 전체를 바꿀 때 사용합니다. */
   replaceRecords: (r: DiaryRecord[]) => Promise<boolean>;
@@ -49,7 +51,7 @@ export function RecordsProvider({ children }: { children: React.ReactNode }) {
 
   const addRecord = useCallback<Ctx['addRecord']>(
     async (r) => {
-      const rec: DiaryRecord = { ...r, id: newRecordId() };
+      const rec: DiaryRecord = { ...r, id: r.id ?? newRecordId() };
       return (await commit([...recordsRef.current, rec])) ? rec : null;
     },
     [commit],
@@ -59,7 +61,8 @@ export function RecordsProvider({ children }: { children: React.ReactNode }) {
     async (id, r) => {
       const old = recordsRef.current.find((x) => x.id === id);
       if (!old) return false;
-      const ok = await commit(recordsRef.current.map((x) => (x.id === id ? { ...r, id, sample: x.sample } : x)));
+      // 글을 고쳐도 구름의 한마디와 대화는 그대로 둡니다.
+      const ok = await commit(recordsRef.current.map((x) => (x.id === id ? { ...r, id, sample: x.sample, comfort: r.comfort ?? x.comfort, chat: r.chat ?? x.chat } : x)));
       if (ok) deletePhotos(old.photos.filter((p) => !r.photos.includes(p)));
       return ok;
     },
@@ -76,6 +79,11 @@ export function RecordsProvider({ children }: { children: React.ReactNode }) {
     [commit],
   );
 
+  const setChat = useCallback<Ctx['setChat']>(
+    (id, chat) => commit(recordsRef.current.map((x) => (x.id === id ? { ...x, chat: chat.length ? chat : undefined } : x))),
+    [commit],
+  );
+
   const updateProfile = useCallback<Ctx['updateProfile']>(
     async (p) => {
       const next = { ...profile, ...p };
@@ -89,8 +97,8 @@ export function RecordsProvider({ children }: { children: React.ReactNode }) {
   const replaceRecords = useCallback<Ctx['replaceRecords']>((r) => commit(r), [commit]);
 
   const value = useMemo(
-    () => ({ ready, records, profile, addRecord, updateRecord, removeRecord, updateProfile, replaceRecords }),
-    [ready, records, profile, addRecord, updateRecord, removeRecord, updateProfile, replaceRecords],
+    () => ({ ready, records, profile, addRecord, updateRecord, removeRecord, setChat, updateProfile, replaceRecords }),
+    [ready, records, profile, addRecord, updateRecord, removeRecord, setChat, updateProfile, replaceRecords],
   );
   return <RecordsContext.Provider value={value}>{children}</RecordsContext.Provider>;
 }

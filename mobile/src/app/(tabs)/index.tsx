@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { ComfortCard } from '../../components/ComfortCard';
 import { EmptyState } from '../../components/EmptyState';
 import { Icon } from '../../components/Icon';
 import { Mascot } from '../../components/Mascot';
@@ -68,6 +69,13 @@ export default function Home() {
         </View>
         {latest ? <RecordCard record={latest} featured /> : ready ? <EmptyState message={'아직 남겨진 마음이 없어요.\n오늘의 첫 마음을 기록해볼까요?'} /> : null}
         {hasSample && <Text style={styles.note}>미리 채워둔 예시 기록입니다 · 내 기록을 추가해보세요</Text>}
+
+        {latest && profile.companion && (
+          <>
+            <Text style={styles.h2}>오늘의 한마디</Text>
+            <ComfortCard record={latest} label="구름이 들려주는 한마디" chat />
+          </>
+        )}
       </ScrollView>
       <ReminderSheetHost visible={reminderOpen} onClose={() => setReminderOpen(false)} />
     </SafeAreaView>

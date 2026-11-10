@@ -3,6 +3,7 @@ import { sortRecords, queryRecords, validateDraft, createSampleRecords, emotionL
 import { recordsInPeriod, countByEmotion, topEmotion, ratios, countByMonth, monthForEmotion, withJosa, distinctDays, weekDays } from '../stats';
 import { createBackup, parseBackup, mergeRecords, BackupError } from '../backup';
 import { parseTime, formatTime, koreanTime, stepTime } from '../time';
+import { detectCrisis, comfortFor, replyFor, CRISIS_NUMBERS } from '../companion';
 import { emailError, passwordError, nicknameError } from '../validation';
 import { DiaryRecord } from '../../types';
 
@@ -82,7 +83,7 @@ describe('stats', () => {
 });
 
 describe('backup', () => {
-  const profile = { name: '무디', reminder: '21:00' };
+  const profile = { name: '무디', reminder: '21:00', companion: true };
   it('round-trips records and profile', () => {
     const rs = [rec('1', '2026-10-22', 0, { photos: ['data:image/jpeg;base64,AAA'] })];
     const parsed = parseBackup(JSON.stringify(createBackup(rs, profile)));
@@ -95,7 +96,7 @@ describe('backup', () => {
       records: [{ id: 1730000000000, date: '2026-10-27', emotion: 4, title: 'a', body: 'b', photos: [], sample: true }] };
     const parsed = parseBackup(JSON.stringify(web));
     expect(parsed.records[0]).toMatchObject({ id: '1730000000000', sample: true });
-    expect(parsed.profile).toEqual({ name: '민', reminder: '21:00' });
+    expect(parsed.profile).toEqual({ name: '민', reminder: '21:00', companion: true });
   });
   it('skips broken records and rejects non-backup files', () => {
     const text = JSON.stringify({ records: [rec('1', '2026-10-22', 0), { id: 'x', date: 'bad', emotion: 0, title: '', body: '' }, { id: 'y', date: '2026-10-22', emotion: 99, title: 'a', body: 'b' }] });
@@ -204,8 +205,61 @@ describe('custom emotion (기타)', () => {
   });
   it('keeps the custom name through a backup and ignores it on other emotions', () => {
     const rs = [rec('1', '2026-10-01', 8, { customEmotion: '  뿌듯함  ' }), rec('2', '2026-10-02', 0, { customEmotion: '무시' })];
-    const parsed = parseBackup(JSON.stringify(createBackup(rs, { name: '무디', reminder: null })));
+    const parsed = parseBackup(JSON.stringify(createBackup(rs, { name: '무디', reminder: null, companion: true })));
     expect(parsed.records[0].customEmotion).toBe('뿌듯함');
     expect(parsed.records[1].customEmotion).toBeUndefined();
   });
 });
+
+describe('companion (체험용 답변 엔진)', () => {
+  const r = { id: '1', emotion: 3, title: '힘든 날', body: '오늘은 좀 슬펐다' };
+  const user = (text: string) => ({ role: 'user' as const, text });
+
+  it('detects crisis wording but not ordinary text', () => {
+    for (const t of ['죽고 싶다', '죽고싶어', '자살 생각이 나', '자해를 했어', '사라지고 싶어', '더는 살기 싫다', '삶을 끝내고 싶어']) expect(detectCrisis(t)).toBe(true);
+    for (const t of ['오늘 일을 끝내고 싶다', '배고파 죽겠다', '친구랑 맛있는 걸 먹었다', '']) expect(detectCrisis(t)).toBe(false);
+  });
+  it('answers a crisis message with help numbers, flagged as crisis, never a normal reply', () => {
+    const res = replyFor(r, [user('요즘 죽고 싶다는 생각이 들어')]);
+    expect(res.crisis).toBe(true);
+    expect(res.text).toContain(CRISIS_NUMBERS.emergency);
+    expect(res.text).toContain(CRISIS_NUMBERS.suicidePrevention);
+  });
+  it('shows help instead of a comfort line when the diary itself signals crisis', () => {
+    const res = comfortFor({ ...r, body: '이제 다 끝내고 싶고 자살하고 싶다' });
+    expect(res.crisis).toBe(true);
+    expect(res.text).toContain('109');
+  });
+  it('gives a non-empty comfort line for every emotion, and the same input gives the same line', () => {
+    for (let e = 0; e < 9; e++) {
+      const c = comfortFor({ ...r, emotion: e });
+      expect(c.role).toBe('companion');
+      expect(c.text.length).toBeGreaterThan(5);
+      expect(c.crisis).toBeUndefined();
+      expect(comfortFor({ ...r, emotion: e })).toEqual(c);
+    }
+  });
+  it('replies by topic, asks gently for short messages, and wraps up after many turns', () => {
+    expect(replyFor(r, [user('너무 피곤하고 지쳐서 힘들어')]).text).toMatch(/지|쉬|힘|버텨/);
+    expect(replyFor(r, [user('고마워요')]).text).toMatch(/기뻐요|고마워요/);
+    expect(replyFor(r, [user('응')]).text.length).toBeGreaterThan(5);
+    const many = Array.from({ length: 8 }, (_, i) => user(`이야기 ${i} 번째 말`));
+    expect(replyFor(r, many).text).toContain('내일도');
+    // 주제 단어가 없으면 기록의 감정 이름을 넣어 이어 갑니다.
+    expect(replyFor(r, [user('회사에서 회의를 했어요')]).text).toContain('슬픔');
+  });
+  it('never gives advice-like diagnosis wording', () => {
+    const all = [0, 1, 2, 3, 4, 5, 6, 7, 8].map((e) => comfortFor({ ...r, emotion: e }).text).join(' ');
+    expect(all).not.toMatch(/진단|병원에 가|약을 |우울증입니다/);
+  });
+  it('keeps comfort and chat through a backup and drops malformed messages', () => {
+    const rec = { ...rec0(), comfort: '고마워요', chat: [{ role: 'user', text: '안녕' }, { role: 'companion', text: '반가워요', crisis: true }, { role: 'x', text: 'bad' }, { role: 'user', text: '  ' }] };
+    const parsed = parseBackup(JSON.stringify({ records: [rec] }));
+    expect(parsed.records[0].comfort).toBe('고마워요');
+    expect(parsed.records[0].chat).toEqual([{ role: 'user', text: '안녕' }, { role: 'companion', text: '반가워요', crisis: true }]);
+    expect(parsed.profile).toBeNull();
+  });
+});
+function rec0(): DiaryRecord {
+  return { id: 'c1', date: '2026-10-01', emotion: 0, title: 't', body: 'b', photos: [] };
+}
