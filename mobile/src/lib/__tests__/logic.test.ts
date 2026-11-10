@@ -2,6 +2,7 @@ import { shiftDate, shiftMonth, dateText, isValidDateString, monthDay, shiftMont
 import { sortRecords, queryRecords, validateDraft, createSampleRecords } from '../records';
 import { recordsInPeriod, countByEmotion, topEmotion, ratios, countByMonth, monthForEmotion, withJosa, distinctDays, weekDays } from '../stats';
 import { createBackup, parseBackup, mergeRecords, BackupError } from '../backup';
+import { parseTime, formatTime, koreanTime, stepTime } from '../time';
 import { DiaryRecord } from '../../types';
 
 const rec = (id: string, date: string, emotion: number, extra: Partial<DiaryRecord> = {}): DiaryRecord => ({
@@ -135,5 +136,29 @@ describe('stats helpers', () => {
     expect(strip[6].record?.id).toBe('2'); // 같은 날이면 나중에 만든 기록
     expect(strip[4].record?.id).toBe('3'); // 10-20
     expect(strip[0].record).toBeNull();
+  });
+});
+
+describe('time', () => {
+  it('parses and formats HH:mm', () => {
+    expect(parseTime('21:05')).toEqual({ hour: 21, minute: 5 });
+    expect(parseTime('24:00')).toBeNull();
+    expect(parseTime('9:00')).toBeNull();
+    expect(parseTime(null)).toBeNull();
+    expect(formatTime({ hour: 7, minute: 0 })).toBe('07:00');
+  });
+  it('shows Korean 12-hour text', () => {
+    expect(koreanTime('21:00')).toBe('오후 9:00');
+    expect(koreanTime('00:05')).toBe('오전 12:05');
+    expect(koreanTime('12:30')).toBe('오후 12:30');
+    expect(koreanTime('09:15')).toBe('오전 9:15');
+    expect(koreanTime(null)).toBe('사용 안 함');
+  });
+  it('steps and wraps hour/minute', () => {
+    expect(stepTime({ hour: 23, minute: 0 }, 'hour', 1)).toEqual({ hour: 0, minute: 0 });
+    expect(stepTime({ hour: 0, minute: 0 }, 'hour', -1)).toEqual({ hour: 23, minute: 0 });
+    expect(stepTime({ hour: 9, minute: 55 }, 'minute', 5)).toEqual({ hour: 9, minute: 0 });
+    expect(stepTime({ hour: 9, minute: 0 }, 'minute', -5)).toEqual({ hour: 9, minute: 55 });
+    expect(stepTime({ hour: 9, minute: 0 }, 'hour', 12)).toEqual({ hour: 21, minute: 0 });
   });
 });

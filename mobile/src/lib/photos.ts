@@ -63,3 +63,27 @@ export function deletePhotos(uris: readonly string[]): void {
 }
 
 export const canAddPhoto = (count: number) => count < MAX_PHOTOS;
+
+/** 백업에 담기 위해 사진 파일을 data URI(base64)로 바꿉니다. 읽을 수 없으면 null. */
+export function photoToDataUri(uri: string): string | null {
+  if (uri.startsWith('data:')) return uri;
+  try {
+    return `data:image/jpeg;base64,${new File(uri).base64Sync()}`;
+  } catch {
+    return null;
+  }
+}
+
+/** 백업의 data URI 사진을 앱 파일로 되돌립니다. 이미 파일 주소면 그대로 둡니다. */
+export function dataUriToPhoto(uri: string): string | null {
+  const m = /^data:image\/[a-z+.-]+;base64,(.+)$/i.exec(uri);
+  if (!m) return uri.startsWith('data:') ? null : uri;
+  try {
+    const dest = new File(photoDir(), `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.jpg`);
+    dest.create();
+    dest.writeSync(m[1], { encoding: 'base64' });
+    return dest.uri;
+  } catch {
+    return null;
+  }
+}

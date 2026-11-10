@@ -4,6 +4,9 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { colors } from '../constants/theme';
 import { RecordsProvider } from '../state/RecordsContext';
 import { ToastProvider } from '../components/Toast';
+import { setupNotificationHandler } from '../lib/reminder';
+
+setupNotificationHandler();
 
 export default function RootLayout() {
   return (

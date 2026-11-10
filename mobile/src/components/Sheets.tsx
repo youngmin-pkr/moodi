@@ -36,8 +36,8 @@ export function PhotoSheet({ visible, onClose, onCamera, onLibrary }: { visible:
 }
 
 export function ConfirmDialog({
-  visible, title, message, confirmLabel, onConfirm, onCancel,
-}: { visible: boolean; title: string; message: string; confirmLabel: string; onConfirm: () => void; onCancel: () => void }) {
+  visible, title, message, confirmLabel, onConfirm, onCancel, tone = 'danger',
+}: { visible: boolean; title: string; message: string; confirmLabel: string; onConfirm: () => void; onCancel: () => void; tone?: 'danger' | 'primary' }) {
   return (
     <Backdrop visible={visible} onClose={onCancel} center>
       <Text style={styles.heading}>{title}</Text>
@@ -46,7 +46,7 @@ export function ConfirmDialog({
         <Pressable accessibilityRole="button" onPress={onCancel} style={[styles.btn, styles.btnGhost]}>
           <Text style={styles.cancelText}>취소</Text>
         </Pressable>
-        <Pressable accessibilityRole="button" onPress={onConfirm} style={[styles.btn, styles.btnDanger]}>
+        <Pressable accessibilityRole="button" onPress={onConfirm} style={[styles.btn, tone === 'danger' ? styles.btnDanger : styles.btnPrimary]}>
           <Text style={styles.confirmText}>{confirmLabel}</Text>
         </Pressable>
       </View>
@@ -70,5 +70,6 @@ const styles = StyleSheet.create({
   btn: { flex: 1, alignItems: 'center', paddingVertical: 14, borderRadius: 14 },
   btnGhost: { backgroundColor: '#f1ecfa' },
   btnDanger: { backgroundColor: colors.danger },
+  btnPrimary: { backgroundColor: colors.primary },
   confirmText: { color: '#fff', fontSize: 15, fontWeight: '700' },
 });
