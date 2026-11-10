@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Pressable, StyleSheet, Switch, Text, TextInput, View } from 'react-native';
+import { Pressable, StyleSheet, Switch, View } from 'react-native';
+import { Text, TextInput } from './Text';
 import { Backdrop } from './Sheets';
 import { PrimaryButton } from './PrimaryButton';
 import { Icon } from './Icon';

@@ -1,4 +1,5 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { Text } from './Text';
 import { router } from 'expo-router';
 import Svg, { Path } from 'react-native-svg';
 import { Mascot } from './Mascot';

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { Animated, type LayoutChangeEvent, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Animated, type LayoutChangeEvent, Pressable, StyleSheet, View } from 'react-native';
+import { Text } from './Text';
 import { BlurView } from 'expo-blur';
 import { router, type Tabs } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';

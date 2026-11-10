@@ -1,4 +1,5 @@
-import { Pressable, StyleSheet, Text, TextInput, TextInputProps, View } from 'react-native';
+import { Pressable, StyleSheet, TextInputProps, View } from 'react-native';
+import { Text, TextInput } from './Text';
 import { colors, brandFont } from '../constants/theme';
 
 export function Wordmark({ size = 44 }: { size?: number }) {

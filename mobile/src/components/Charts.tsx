@@ -1,4 +1,5 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { Text } from './Text';
 import Svg, { Circle } from 'react-native-svg';
 import { colors, titleFont } from '../constants/theme';
 

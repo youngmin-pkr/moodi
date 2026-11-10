@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import { Jua_400Regular } from '@expo-google-fonts/jua';
 import { Syncopate_700Bold } from '@expo-google-fonts/syncopate';
 import { StatusBar } from 'expo-status-bar';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
@@ -31,7 +30,12 @@ function HideSplashWhenReady({ fontsReady }: { fontsReady: boolean }) {
 }
 
 export default function RootLayout() {
-  const [fontsLoaded, fontError] = useFonts({ Jua_400Regular, Syncopate_700Bold });
+  const [fontsLoaded, fontError] = useFonts({
+    'Pretendard-Regular': require('../../assets/fonts/Pretendard-Regular.otf'),
+    'Pretendard-Medium': require('../../assets/fonts/Pretendard-Medium.otf'),
+    'Pretendard-Bold': require('../../assets/fonts/Pretendard-Bold.otf'),
+    Syncopate_700Bold,
+  });
   // 글꼴을 못 불러와도 앱은 기본 글꼴로 계속 쓸 수 있어야 합니다.
   const fontsReady = fontsLoaded || fontError !== null;
   return (

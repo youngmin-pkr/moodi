@@ -40,8 +40,8 @@ npx expo start
 ## 디자인
 
 - 스토리보드의 "몽환적, 보라색" 분위기: 보라 그라데이션, 노을 지는 방 일러스트(홈 소개 카드), 구름 캐릭터.
-- 글꼴: 제목은 **Jua**(둥근 한글), 로고는 **Syncopate Bold**, 본문은 기기 기본 고딕입니다. 앱에 포함되는 글꼴은 `@expo-google-fonts` 패키지이며(SIL Open Font License), 글꼴 설정은 `src/constants/theme.ts`에 있습니다. 글꼴이 늦게 불러와져 화면이 깜빡이지 않도록 시작 화면을 유지합니다.
-- **글꼴 바꾸기**: 파일(.ttf/.otf)을 `assets/fonts/`에 넣고, `src/app/_layout.tsx`의 `useFonts`에 `{ 이름: require('../../assets/fonts/파일.ttf') }`를 추가한 뒤, `src/constants/theme.ts`의 `fonts.title`(제목) 또는 `fonts.brand`(로고)를 그 이름으로 바꾸면 전체에 적용됩니다. 한글이 들어 있는 글꼴인지, 앱에 넣어 배포해도 되는 라이선스인지 먼저 확인하세요.
+- 글꼴: 앱 전체가 **Pretendard**(Regular·Medium·Bold, `assets/fonts/`)이고, 로고(MOODI)만 **Syncopate Bold**(`@expo-google-fonts/syncopate`)입니다. Pretendard는 SIL Open Font License로 알려져 있으니, 앱을 배포할 때는 글꼴 배포처의 라이선스 문구를 함께 확인하세요. ExtraLight·Light는 쓰는 곳이 없어 넣지 않았습니다. 글꼴이 늦게 불러와져 화면이 깜빡이지 않도록 시작 화면을 유지합니다.
+- **글꼴 바꾸기**: 파일(.ttf/.otf)을 `assets/fonts/`에 넣고, `src/app/_layout.tsx`의 `useFonts`에 등록한 뒤, `src/constants/theme.ts`의 `fonts`와 `fontFamilyForWeight`를 바꾸면 전체에 적용됩니다. 글자는 `src/components/Text.tsx`의 `Text`·`TextInput`을 쓰며, `fontWeight`를 글꼴 파일(Regular/Medium/Bold)로 바꿔 줍니다. 한글이 들어 있는 글꼴인지, 앱에 넣어 배포해도 되는 라이선스인지 먼저 확인하세요.
 - **탭 바**: 화면 위에 떠 있는 반투명(흐림 효과) 알약 모양이고, 선택 표시가 탭 사이를 미끄러져 움직입니다(`src/components/FloatingTabBar.tsx`). 탭 화면의 아래 여백은 `useTabBarPadding()`으로 맞춥니다.
 - 구름 캐릭터는 감정마다 표정이 다릅니다(`src/components/Mascot.tsx`). `emotion` 없이 쓰면 무표정인 브랜드 구름입니다.
 - 앱 아이콘·시작 화면 이미지는 `assets/`에 있으며, 구름 SVG에서 만든 PNG입니다.
